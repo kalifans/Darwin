@@ -1,0 +1,100 @@
+#!/bin/bash
+
+
+OS=$(uname)
+
+if [ "$OS" == "Darwin" ]; then
+	TAR=/usr/bin/tar
+else
+	TAR=/usr/bin/tar
+fi
+
+tar_pkg_fun(){
+clear
+echo -e ""
+echo -e "    tar 壓縮"
+echo -e ""
+echo -e ""
+echo -e "    設置壓縮目錄路徑"
+echo -e "    拖放目錄到此"
+echo -e ""
+
+read PATH
+[[ "$PATH" ]]
+
+echo -e ""
+echo -e "    設置保存路徑"
+echo -e "    可拖放目錄到此"
+echo -e ""
+read SAVE
+[[ "$SAVE" ]]
+
+echo -e ""
+echo -e "    設置保存檔名"
+echo -e "    輸入要保存的名稱(不含副檔名)"
+echo -e ""
+
+read NAME
+[[ "$NAME" ]]
+
+if [ "$NAME" == "" ]; then
+	NAME="NO_NAME"
+fi
+
+cd $PATH
+
+$TAR cvf $SAVE"/"$NAME".tar" *
+
+}
+
+tar_unpkg_fun(){
+clear
+echo -e ""
+echo -e "    tar 解壓縮"
+echo -e ""
+echo -e ""
+echo -e "    設置解壓縮存放路徑"
+echo -e "    可拖放目錄到此"
+echo -e ""
+read SAVE
+[[ "$SAVE" ]]
+
+
+echo -e ""
+echo -e "    設置解壓縮文件路徑"
+echo -e "    可拖放檔案到此"
+echo -e ""
+read FILE
+[[ "$FILE" ]]
+
+cd $SAVE
+$TAR xvf $FILE
+
+}
+
+
+main_fun(){
+
+clear
+echo -e ""
+echo -e "    tar 壓縮/解壓縮"
+echo -e ""
+echo -e "    1)  tar 壓縮"
+echo -e "    2)  tar 解壓縮"
+echo -e "    0)  EXIT"
+
+read MENU
+[[ "$MENU" ]]
+
+if [ "$MENU" == "1" ]; then
+	tar_pkg_fun
+
+elif [ "$MENU" == "2" ]; then
+    tar_unpkg_fun
+else
+    exit
+fi
+
+}
+
+main_fun

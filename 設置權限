@@ -1,0 +1,110 @@
+#!/bin/bash
+
+
+SU="/usr/bin/sudo"
+FSMOD="/bin/chmod"
+FSOWN="/usr/sbin/chown"
+
+
+setpath_fun(){
+echo -e ""
+echo -e "    拖放文件或目錄到此"
+echo -e ""
+read PATH
+[[ "$PATH" ]]
+
+if [ "$MENU" == "1" ]; then
+    if [ "$TYPE" == "1" ]; then
+	    $SU $FSMOD -R $PERMISSION $PATH
+    else
+	    $SU $FSMOD $PERMISSION $PATH
+	fi
+elif [ "$MENU" == "2" ]; then
+	if [ "$TYPE" == "1" ]; then
+		$SU $FSOWN -R $OWN $PATH
+	else
+		$SU $FSOWN $OWN $PATH
+	fi
+fi
+
+}
+
+settype_fun(){
+echo -e ""
+echo -e "    設置目錄/文件權限"
+echo -e ""
+echo -e "    1)  設置目錄權限"
+echo -e "    2)  設置文件權限"
+read OPT
+[[ "$OPT" ]]
+
+if [ "$OPT" == "1" ]; then
+	TYPE="1"
+fi
+
+}
+
+setmod_fun(){
+clear
+echo -e ""
+echo -e "    設置權限"
+echo -e ""
+echo -e "    輸入範例 777 / 755 / 644"
+read PERMISSION
+[[ "$PERMISSION" ]]
+
+if [ "$PERMISSION" == "" ]; then
+	exit
+fi
+
+settype_fun
+setpath_fun
+
+}
+
+setown_fun(){
+clear
+echo -e ""
+echo -e "    設置擁有者"
+echo -e ""
+echo -e "    1)  ROOT"
+echo -e "    2)  $USER"
+read OPT
+[[ "$OPT" ]]
+
+if [ "$OPT" == "1" ]; then
+	OWN="root:wheel"
+else
+	OWN="$USER:staff"
+fi
+
+settype_fun
+setpath_fun
+
+}
+
+main_fun(){
+clear
+echo -e ""
+echo -e "    設置權限/擁有者"
+echo -e ""
+echo -e "    1)  設置權限"
+echo -e "    2)  設置擁有者"
+echo -e "    3)  EXIT"
+
+read MENU
+[[ "$MENU" ]]
+
+if [ "$MENU" == "1" ]; then
+	setmod_fun
+elif [ "$MENU" == "2" ]; then
+	setown_fun
+else
+	exit
+fi
+
+exit
+
+}
+
+main_fun
