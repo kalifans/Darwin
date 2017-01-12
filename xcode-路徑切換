@@ -8,7 +8,7 @@ clear
 echo -e ""
 echo -e "    設置 XCODE 路徑"
 echo -e ""
-echo -e "    拖放 XCODE 到此"
+echo -e "    拖放 XCODE.app 到此"
 echo -e ""
 read PATH
 [[ "$PATH" ]]
