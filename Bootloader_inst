@@ -1,0 +1,59 @@
+#!/bin/bash
+
+
+CLEAR=/usr/bin/clear
+DISKUTIL=/usr/sbin/diskutil
+SED=/usr/bin/sed
+AWK=/usr/bin/awk
+SU=/usr/bin/sudo
+MOUNT=/sbin/mount
+GREP=/usr/bin/grep
+
+main_fun(){
+
+$CLEAR
+echo -e ""
+echo -e "    安裝 Bootloader"
+echo -e ""
+echo -e "    拖放 Bootloader 目錄到此"
+echo -e ""
+
+read PATH
+[[ "$PATH" ]]
+
+if [ "$PATH" == "" ]; then
+    exit
+fi
+
+
+$CLEAR
+echo -e ""
+echo -e "    選擇安裝磁區"
+echo -e "    輸入裝置代號"
+echo -e "    輸入範例: disk0s1"
+echo -e ""
+
+$DISKUTIL list | $SED '/TYPE/d' | $SED '/partition_scheme/d'
+
+read DEV
+[[ "$DEV" ]]
+
+if [ "$DEV" == "" ]; then
+	exit
+fi
+
+MBR=$(echo $DEV | $AWK -F'[s]' '{print $1 "s" $2}')
+VNAME=$($MOUNT | $GREP $DEV | $AWK '{print $3}')
+
+
+cd $PATH
+$SU ./fdisk440 -f boot0md -u -y /dev/r"$MBR"
+$SU /bin/dd if=./boot1h of=/dev/r"$DEV"
+
+$SU /bin/cp ./boot $VNAME"/"
+$SU /usr/sbin/chown 0:0 $VNAME"/"boot
+$SU /usr/bin/chflags hidden $VNAME"/"boot
+
+}
+
+main_fun

@@ -1,0 +1,90 @@
+#!/bin/bash
+
+
+main_fun(){
+
+clear
+echo -e ""
+echo -e "    Mac HFS+ 磁碟重新掛載"
+echo -e ""
+echo -e "    1)  讀寫模式"
+echo -e "    2)  唯讀模式"
+echo -e "    0)  EXIT"
+echo -e ""
+
+read RW
+[[ "$RW" ]]
+
+if [ "$RW" == "1" ]; then
+	RO="NO"
+elif [ "$RW" == "2" ]; then
+    RO="YES"
+else
+    exit
+fi
+
+echo -e ""
+echo -e "    1)  SUID"
+echo -e "    2)  NOSUID"
+echo -e ""
+
+read SU
+[[ "$SU" ]]
+
+if [ "$SU" == "1" ]; then
+	SUID="YES"
+elif [ "$SU" == "2" ]; then
+    SUID="NO"
+else
+    exit
+fi
+
+clear
+echo -e ""
+echo -e "    選擇重新掛載卷冊名稱"
+echo -e ""
+echo -e "    可在Finder路徑列直接拖放到這裡"
+echo -e "    也可直接輸入裝置代號或卷冊名稱"
+echo -e "    輸入範例: disk0s1 或 LOADER"
+echo -e ""
+mount | grep /dev/
+echo -e ""
+read MPT
+[[ "$MPT" ]]
+
+if [ "$MPT" == "" ]; then
+    exit
+fi
+
+DEV=$(mount | grep $MPT | awk '{print $1}')
+VNAME=$(mount | grep $MPT | awk '{print $3}')
+
+if [ "$RO" == "YES" ]; then
+	if [ "$SUID" == "YES" ]; then
+		OPT="-o update,ro,dev,suid"
+	else
+		OPT="-o update,ro,nodev,nosuid"
+	fi
+else
+	if [ "$SUID" == "YES" ]; then
+		OPT="-o update,dev,suid"
+	else
+		OPT="-o update,nodev,nosuid"
+	fi
+fi
+
+sudo mount -t hfs $OPT $DEV $VNAME
+
+clear
+echo -e ""
+echo -e "    已更新磁碟狀態"
+echo -e ""
+mount | grep /dev/
+
+read REM
+
+exit
+
+}
+
+main_fun

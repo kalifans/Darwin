@@ -1,0 +1,50 @@
+#!/bin/bash
+
+
+####### Depends ###############################
+### libimobiledevice libirecovery
+###############################################
+
+
+IDEV_DIGS=/usr/local/bin/idevicediagnostics
+IDEV_RECY=/usr/local/bin/ideviceenterrecovery
+IRECY=/usr/local/bin/irecovery
+SU=/usr/bin/sudo
+
+main_fun(){
+
+clear
+echo -e ""
+echo -e "    IOS 啟動選項"
+echo -e ""
+echo -e "    1)  重新啟動"
+echo -e "    2)  關機"
+echo -e "    3)  進入回復模式"
+echo -e "    4)  退出回復模式"
+echo -e "    5)  斷開 / DFU 模式(越獄)"
+echo -e "    0)  EXIT"
+
+read MENU
+[[ "$MENU" ]]
+
+if [ "$MENU" == "1" ]; then
+	$SU $IDEV_DIGS restart
+
+elif [ "$MENU" == "2" ]; then
+    $SU $IDEV_DIGS shutdown
+
+elif [ "$MENU" == "3" ]; then
+	$SU $IDEV_RECY
+elif [ "$MENU" == "4" ]; then
+	$SU $IRECY -c "setenv auto-boot true"
+	$SU $IRECY -c "saveenv"
+	$SU $IRECY -c "reboot"
+elif [ "$MENU" == "5" ]; then
+	$SU $IDEV_DIGS sleep
+else
+    exit
+fi
+
+}
+
+main_fun
