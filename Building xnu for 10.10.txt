@@ -1,0 +1,54 @@
+Building xnu for OS X 10.10 Yosemite
+The OS X kernel source (xnu) has been released for OS X 10.10 Yosemite: here
+
+Building xnu requires Xcode and some additional open-source (but not pre-installed) dependencies. You can build xnu manually by doing:
+
+
+Install OS X Yosemite and Xcode 6.1 from the Mac App Store, make sure the Xcode license has been agreed-to with "sudo xcodebuild -license"
+Download the source for the dtrace and AvailabilityVersions projects, which are required dependencies, as well as xnu itself
+$ curl -O http://opensource.apple.com/tarballs/dtrace/dtrace-147.tar.gz
+$ curl -O http://opensource.apple.com/tarballs/AvailabilityVersions/AvailabilityVersions-9.tar.gz
+$ curl -O http://opensource.apple.com/tarballs/xnu/xnu-2782.1.97.tar.gz
+Build and install CTF tools from dtrace
+$ tar zxf dtrace-147.tar.gz
+$ cd dtrace-147
+$ mkdir -p obj sym dst
+$ xcodebuild install -target ctfconvert -target ctfdump -target ctfmerge ARCHS="x86_64" SRCROOT=$PWD OBJROOT=$PWD/obj SYMROOT=$PWD/sym DSTROOT=$PWD/dst
+...
+$ sudo ditto $PWD/dst/usr/local /usr/local
+Password:
+$ cd ..
+Install AvailabilityVersions
+$ tar zxf AvailabilityVersions-9.tar.gz
+$ cd AvailabilityVersions-9
+$ mkdir -p dst
+$ make install SRCROOT=$PWD DSTROOT=$PWD/dst
+$ sudo ditto $PWD/dst/usr/local $(xcrun -sdk macosx -show-sdk-path)/usr/local
+$ cd ..
+Build xnu
+$ tar zxf xnu-2782.1.97.tar.gz
+$ cd xnu-2782.1.97
+$ make -j2 ARCH_CONFIGS=X86_64 KERNEL_CONFIGS=RELEASE SDKROOT=$(xcrun -sdk macosx -show-sdk-path) BUILD_LTO=0
+
+See xnu's top-level README for additional build variables that can be passed on the command-line, such as BUILD_LTO=0 .
+
+Update: If you are attempting to add system calls, you may also need to build Libsyscall.
+
+
+Download the Libsystem source
+$ curl -O http://opensource.apple.com/tarballs/Libsystem/Libsystem-1213.tar.gz
+Install Libsystem headers
+$ tar zxf Libsystem-1213.tar.gz 
+$ cd Libsystem-1213
+$ xcodebuild installhdrs -sdk macosx ARCHS='x86_64 i386' SRCROOT=$PWD OBJROOT=$PWD/obj SYMROOT=$PWD/sym DSTROOT=$PWD/dst
+$ sudo ditto $PWD/dst $(xcrun -sdk macosx -show-sdk-path)
+$ cd ..
+Install xnu and Libsyscall headers
+$ cd xnu-2782.1.97
+$ mkdir -p BUILD.hdrs/obj BUILD.hdrs/sym BUILD.hdrs/dst
+$ make installhdrs SDKROOT=macosx ARCH_CONFIGS=X86_64 SRCROOT=$PWD OBJROOT=$PWD/BUILD.hdrs/obj SYMROOT=$PWD/BUILD.hdrs/sym DSTROOT=$PWD/BUILD.hdrs/dst
+$ xcodebuild installhdrs -project libsyscall/Libsyscall.xcodeproj -sdk macosx ARCHS='x86_64 i386' SRCROOT=$PWD/libsyscall OBJROOT=$PWD/BUILD.hdrs/obj SYMROOT=$PWD/BUILD.hdrs/sym DSTROOT=$PWD/BUILD.hdrs/dst
+$ sudo ditto BUILD.hdrs/dst $(xcrun -sdk macosx -show-sdk-path)
+Build Libsyscall
+$ mkdir -p BUILD.libsyscall/obj BUILD.libsyscall/sym BUILD.libsyscall/dst
+$ xcodebuild install -project libsyscall/Libsyscall.xcodeproj -sdk macosx ARCHS='x86_64 i386' SRCROOT=$PWD/libsyscall OBJROOT=$PWD/BUILD.libsyscall/obj SYMROOT=$PWD/BUILD.libsyscall/sym DSTROOT=$PWD/BUILD.libsyscall/dst
