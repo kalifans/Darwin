@@ -1,0 +1,52 @@
+Building xnu for OS X 10.7.5 Lion
+
+Install Xcode 4.1
+
+Download the build tools source(s)
+
+$ curl -s -O http://opensource.apple.com/tarballs/dtrace/dtrace-90.tar.gz
+$ curl -s -O http://opensource.apple.com/tarballs/bootstrap_cmds/bootstrap_cmds-79.tar.gz
+
+Unpack the tools
+
+$ tar zxf dtrace-90.tar.gz
+$ tar zxf bootstrap_cmds-78.tar.gz
+
+Build dtrace
+
+$ cd dtrace-90
+$ mkdir -p obj sym dst
+$ xcodebuild install -target ctfconvert -target ctfdump -target ctfmerge ARCHS="i386 x86_64" SRCROOT=$PWD OBJROOT=$PWD/obj SYMROOT=$PWD/sym DSTROOT=$PWD/dst
+...
+$ sudo ditto $PWD/dst/usr/local /usr/local
+Password:
+$ cd ..
+
+Build bootstrap_cmds
+
+$ cd bootstrap_cmds-78
+$ mkdir -p obj sym dst
+$ make install RC_ARCHS="i386" SRCROOT=$PWD OBJROOT=$PWD/obj SYMROOT=$PWD/sym DSTROOT=$PWD/dst
+...
+$ sudo ditto $PWD/dst/usr/local /usr/local
+Password:
+$ cd ..
+
+Download the xnu source
+
+$ curl -s -O http://opensource.apple.com/tarballs/xnu/xnu-1699.32.7.tar.gz
+
+Unpack xnu
+
+$ tar zxf xnu-1699.32.7.tar.gz
+
+Build xnu
+
+$ cd xnu-1699.32.7
+$ make ARCH_CONFIGS="I386 X86_64" KERNEL_CONFIGS="RELEASE"
+$ make ARCH_CONFIGS="I386" KERNEL_CONFIGS="RELEASE"
+$ make ARCH_CONFIGS="X86_64" KERNEL_CONFIGS="RELEASE"
+...
+$ file BUILD/obj/RELEASE_*/mach_kernel
+BUILD/obj/RELEASE_I386/mach_kernel: Mach-O executable i386
+BUILD/obj/RELEASE_X86_64/mach_kernel: Mach-O 64-bit executable x86_64

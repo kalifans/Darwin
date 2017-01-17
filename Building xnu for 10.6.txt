@@ -1,0 +1,71 @@
+Building xnu for OS X 10.6 Snow Leopard
+
+Building xnu requires some open source (but not pre-installed) tools. Darwinbuild is the most reliable way for building these dependencies and xnu itself. Until that is ready, you can build the tools manually as follows:
+
+Download the build tools source(s)
+
+$ curl -s -O http://www.opensource.apple.com/tarballs/cxxfilt/cxxfilt-9.tar.gz
+$ curl -s -O http://www.opensource.apple.com/tarballs/dtrace/dtrace-78.tar.gz
+$ curl -s -O http://www.opensource.apple.com/tarballs/kext_tools/kext_tools-180.2.1.tar.gz
+$ curl -s -O http://www.opensource.apple.com/tarballs/bootstrap_cmds/bootstrap_cmds-72.tar.gz
+
+Unpack the tools
+
+$ tar zxf cxxfilt-9.tar.gz
+$ tar zxf dtrace-78.tar.gz
+$ tar zxf kext_tools-177.tar.gz
+$ tar zxf bootstrap_cmds-72.tar.gz
+
+Build cxxfilt
+
+$ cd cxxfilt-9
+$ mkdir -p obj sym dst
+$ make install RC_ARCHS="i386 x86_64" RC_CFLAGS="-arch i386 -arch x86_64 -pipe" RC_OS=macos RC_RELEASE=SnowLeopard SRCROOT=$PWD OBJROOT=$PWD/obj SYMROOT=$PWD/sym DSTROOT=$PWD/dst
+...
+$ sudo ditto $PWD/dst/usr/local /usr/local
+Password:
+$ cd ..
+
+Build dtrace
+
+$ cd dtrace-78
+$ mkdir -p obj sym dst
+$ xcodebuild install -target ctfconvert -target ctfdump -target ctfmerge ARCHS="i386 x86_64" SRCROOT=$PWD OBJROOT=$PWD/obj SYMROOT=$PWD/sym DSTROOT=$PWD/dst
+...
+$ sudo ditto $PWD/dst/usr/local /usr/local
+Password:
+$ cd ..
+
+Build kext_tools
+
+$ cd kext_tools-177
+$ mkdir -p obj sym dst
+$ xcodebuild install -target kextsymboltool -target setsegname ARCHS="i386 x86_64" SRCROOT=$PWD OBJROOT=$PWD/obj SYMROOT=$PWD/sym DSTROOT=$PWD/dst
+...
+$ sudo ditto $PWD/dst/usr/local /usr/local
+Password:
+$ cd ..
+
+Build bootstrap_cmds
+
+$ cd bootstrap_cmds-72
+$ mkdir -p obj sym dst
+$ make install RC_ARCHS="i386" RC_CFLAGS="-arch i386 -pipe" RC_OS=macos RC_RELEASE=SnowLeopard SRCROOT=$PWD OBJROOT=$PWD/obj SYMROOT=$PWD/sym DSTROOT=$PWD/dst
+...
+$ sudo ditto $PWD/dst/usr/local /usr/local
+Password:
+$ cd ..
+
+Download the xnu source
+$ curl -s -O http://www.opensource.apple.com/tarballs/xnu/xnu-1456.1.26.tar.gz
+
+Unpack xnu
+$ tar zxf xnu-1456.1.26.tar.gz
+
+Build xnu
+$ cd xnu-1456.1.26
+$ make ARCH_CONFIGS="I386 X86_64" KERNEL_CONFIGS="RELEASE"
+...
+$ file BUILD/obj/RELEASE_*/mach_kernel
+BUILD/obj/RELEASE_I386/mach_kernel: Mach-O executable i386
+BUILD/obj/RELEASE_X86_64/mach_kernel: Mach-O 64-bit executable x86_64
