@@ -1,0 +1,71 @@
+#!/bin/bash
+
+
+####################################
+msg_fun(){
+/usr/bin/clear
+echo -e "****************************"
+echo -e "    zip 套件安裝完成"
+echo -e "****************************"
+echo -e ""
+echo -e "    按任意鍵繼續"
+echo -e ""
+read MSG
+main_fun
+}
+
+main_fun(){
+/usr/bin/clear
+echo -e ""
+echo -e "****************************"
+echo -e "    安裝自編譯 zip 套件"
+echo -e "****************************"
+echo -e ""
+echo -e "    選擇要安裝的套件"
+echo -e ""
+echo -e "    按 x 退出"
+echo -e ""
+
+read PATH
+[[ "$PATH" ]]
+
+if [ "$PATH" == "x" ]; then
+    exit
+fi
+
+if [ "$PATH" == "" ]; then
+	echo "    沒有輸入套件."
+    exit
+fi
+
+NAME=$(/usr/bin/basename $PATH | /usr/bin/sed s/-osx.*//)
+
+cd /tmp
+/usr/bin/unzip $PATH
+
+# 製作移除資訊
+/usr/bin/sudo /bin/mkdir -p /usr/local/pkginfo
+/usr/bin/sudo /usr/bin/find $NAME | /usr/bin/sed s/$NAME// > /usr/local/pkginfo/$NAME
+
+# 安裝套件
+cd $NAME
+/usr/bin/sudo /bin/cp -rf * /
+cd ..
+/usr/bin/sudo /bin/rm -rf $NAME
+/usr/bin/sudo /bin/rm -rf __MACOSX
+
+msg_fun
+}
+
+if [ "$UID" == "0" ]; then
+    main_fun
+else
+    /usr/bin/clear
+    echo -e ""
+    echo -e "****************************"
+    echo -e "    請使用root權限執行"
+    echo -e "****************************"
+    echo -e ""
+    exit
+fi
+
