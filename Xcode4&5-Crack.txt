@@ -1,0 +1,104 @@
+Xcode 4/5 Crack
+
+==================================================
+1.製作憑證
+打開「鑰匙圈存取」
+鑰匙圈存取 -> 憑證輔助程式 -> 製作憑證
+
+名稱: iPhone Developer
+識別身份類型: 自簽根
+憑證類型: 代碼簽名
+覆蓋預設值打勾
+
+然後按「製作」-> 「繼續」到「完成」，其餘預設。
+
+建立好證書之後，打開「鑰匙圈存取」，然後在證書上按右鍵 -> 簡介
+在「信任」的地方 「使用此憑證時:」選擇「永遠信任」。
+
+==================================================
+2. 修改Xcode配置修改
+Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/SDKSettings.plist
+
+終端機輸入:
+XCODE_BASE=$(/usr/bin/xcrun -f otest | sed s/"\/Tools\/otest"//g)
+PATH="$XCODE_BASE"/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS*.sdk/
+/usr/bin/open $PATH
+
+修改 SDKSettings.plist
+<key>CODE_SIGNING_REQUIRED</key>
+<string>NO</string>
+
+<key>ENTITLEMENTS_REQUIRED</key>
+<string>NO</string>
+
+終端機輸入:
+XCODE_BASE=$(/usr/bin/xcrun -f otest | /usr/bin/sed s/"\/Tools\/otest"//g)
+PATH="$XCODE_BASE"/Platforms/iPhoneOS.platform
+/usr/bin/open $PATH
+
+修改 Info.plist
+DefaultProperties -> CODE_SIGN_CONTEXT_CLASS
+OverrideProperties -> CODE_SIGN_CONTEXT_CLASS
+RuntimeRequirements -> Classes 0
+
+以上三個項目內的值:
+XCiPhoneOSCodeSignContext 改成 XCCodeSignContext
+
+*** Binary Patch for xcode 4.1/4.2 ***
+只用於 4.1 / 4.2 版
+$ XCODE_BASE=$(/usr/bin/xcrun -f otest | sed s/"\/Tools\/otest"//g)
+$ PATH="$XCODE_BASE"/Platforms/iPhoneOS.platform/Developer/Library/Xcode/PrivatePlugIns/iPhoneOS\ Build\ System\ Support.xcplugin/Contents/MacOS
+$ cd $PATH
+$ dd if=iPhoneOS\ Build\ System\ Support of=working bs=500 count=255
+$ printf "xc3x26x00x00" >> working
+$ mv -n iPhoneOS\ Build\ System\ Support iPhoneOS\ Build\ System\ Support.orig
+$ mv working iPhoneOS\ Build\ System\ Support
+$ chmod 755 iPhoneOS\ Build\ System\ Support
+
+==================================================
+3.設置 gen_entitlements.py 腳本
+主要用於產生 entitlements 文件
+終端機輸入:
+XCODE_BASE=$(/usr/bin/xcrun -f otest | sed s/"\/Tools\/otest"//g)
+mkdir $XCODE_BASE/iphoneentitlements
+cd $XCODE_BASE/iphoneentitlements
+curl -O http://www.alexwhittemore.com/iphone/gen_entitlements.txt
+mv gen_entitlements.txt gen_entitlements.py
+chmod 777 gen_entitlements.py
+
+第一修改階段完成
+
+##### 下面是每次建立專案都必須做的流程 #####
+
+==================================================
+4.修改專案屬性
+每個專案都必須修改的
+
+Targets -> Build Settings
+Code Signing 全部改為 Don't Code Sign
+
+Project -> Build Settings
+Code Signing 全部改為 iPhone Developer
+
+Targets -> Build Phases
+在功能表 Editor -> Add Build Phase -> Add Run Script Build Phase
+
+輸入以下腳本
+DEV_NAME="iPhone Developer"
+XCODE_BASE=$(/usr/bin/xcrun -f otest | sed s/"\/Tools\/otest"//g)
+export CODESIGN_ALLOCATE=$XCODE_BASE/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate
+if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "ipados" ]; then
+    $XCODE_BASE/iphoneentitlements/gen_entitlements.py "my.company.${PROJECT_NAME}" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent";
+    codesign -f -s "$DEV_NAME" --entitlements "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/";
+fi
+
+註: 如果有有效憑證 DEV_NAME 可以改為你自己的名稱 例如: iPhone Developer: fansmint@zoho.com.cn (MHC9PRPE9Q)
+
+info 項目內 Bundle identifier 名稱，如果不是 APP 的 Bundle identifier 記得改回來。
+
+==================================================
+5.連接設備
+Windows -> Organizer
+視窗右邊點 Use for Development 即可。
+這時候，設備旁邊應該是亮黃燈，重新接傳輸線 Organizer 中會出現進度條，跑完變綠色後表示開發模式已經啟用。
+然後回到專案中，選擇你的設備「Run」即可。
