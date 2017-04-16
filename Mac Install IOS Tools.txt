@@ -1,0 +1,71 @@
+Mac Install IOS Tools
+
+* Install brew 
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+brew update
+brew install libimobiledevice
+brew cask install osxfuse
+brew install homebrew/fuse/fuse
+
+OS X 10.9 Install libimobiledevice:
+update to Xcode 6.1.1 or later
+
+* libirecovery
+git clone https://github.com/libimobiledevice/libirecovery
+cd libirecovery
+./autogen.sh
+# for Xcode 7: ln -s /usr/local/include/libusb-1.0 libusb-1.0
+make
+sudo make install 
+cd ..
+
+移除:
+rm /usr/local/lib/libirecovery.1.dylib
+rm /usr/local/lib/libirecovery.la
+rm /usr/local/lib/libirecovery.a
+rm /usr/local/bin/irecovery
+rm /usr/local/lib/pkgconfig/libirecovery.pc
+rm /usr/local/include/libirecovery.h
+
+* idevicerestore
+brew install libzip gcc
+
+git clone https://github.com/libimobiledevice/idevicerestore.git
+cd idevicerestore
+./autogen.sh
+# for Xcode 7: ln -s /usr/local/Cellar/openssl/$(ls /usr/local/Cellar/openssl)/include/openssl openssl
+make
+sudo make install
+cd ..
+
+移除:
+rm /usr/local/bin/idevicerestore
+rm /usr/local/share/man/man1/idevicerestore.1
+
+* libideviceactivation
+git clone https://github.com/libimobiledevice/libideviceactivation.git
+cd libideviceactivation
+./autogen.sh
+make
+sudo make install
+cd ..
+
+Example:
+# Mount IOS
+mkdir -p ~/iPhone
+ifuse ~/iPhone
+ifuse ~/iPhone --root
+
+# info 
+irecovery -s
+
+# exit recovery mode
+sudo irecovery -c "setenv auto-boot true"
+sudo irecovery -c "saveenv"
+sudo irecovery -c "reboot"
+or
+sudo irecovery -r or -n
+
+# into recovery mode
+ideviceenterrecovery -u

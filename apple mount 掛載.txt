@@ -1,0 +1,33 @@
+查看磁碟列表
+diskutil list
+
+卸載
+diskutil unmount /Volumes/OPT
+diskutil unmount /OPT
+
+掛載讀寫模式
+/sbin/mount -t hfs -o rw /dev/disk3s1 /OPT
+或
+/sbin/mount_hfs -o rw,dev,suid /dev/disk3s1 /OPT
+
+掛載唯讀模式
+/sbin/mount -t hfs -o ro /dev/disk3s1 /OPT
+或
+/sbin/mount_hfs -o ro,dev,suid /dev/disk3s1 /OPT
+
+重新掛載成讀寫模式(ro to rw)
+/sbin/mount -t hfs -o update,rw /dev/disk3s1 /OPT
+或
+/sbin/mount -t hfs -o update /dev/disk3s1 /OPT
+
+或
+/sbin/mount_hfs -o update,rw /dev/disk3s1 /OPT
+
+重新掛載成唯讀模式(rw to ro)
+/sbin/mount -t hfs -o update,ro /dev/disk3s1 /OPT
+或
+/sbin/mount_hfs -o update,ro /dev/disk3s1 /OPT
+
+查看掛載資訊
+mount
+
