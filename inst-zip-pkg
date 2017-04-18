@@ -1,6 +1,9 @@
 #!/bin/bash
 
 
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+
 ####################################
 msg_fun(){
 /usr/bin/clear
@@ -38,21 +41,30 @@ if [ "$PATH" == "" ]; then
     exit
 fi
 
-NAME=$(/usr/bin/basename $PATH | /usr/bin/sed s/-osx.*//)
+NAME=$(/usr/bin/basename "$PATH" | /usr/bin/sed s/-osx.*//)
+DIR=$(/usr/bin/dirname "$PATH")
+
+# check
+cd $DIR
+CHECK=$(/bin/ls | /usr/bin/grep $NAME)
+if [ "$CHECK" == "" ]; then
+    echo "    沒有找到套件."
+    exit
+fi
 
 cd /tmp
-/usr/bin/unzip $PATH
+/usr/bin/unzip "$PATH"
 
 # 製作移除資訊
-/usr/bin/sudo /bin/mkdir -p /usr/local/pkginfo
-/usr/bin/sudo /usr/bin/find $NAME | /usr/bin/sed s/$NAME// > /usr/local/pkginfo/$NAME
+/bin/mkdir -p /usr/local/pkginfo
+/usr/bin/find "$NAME" | /usr/bin/sed s/"$NAME"// > /usr/local/pkginfo/"$NAME"
 
 # 安裝套件
-cd $NAME
-/usr/bin/sudo /bin/cp -rf * /
+cd "$NAME"
+/bin/cp -rf * /
 cd ..
-/usr/bin/sudo /bin/rm -rf $NAME
-/usr/bin/sudo /bin/rm -rf __MACOSX
+/bin/rm -rf "$NAME"
+/bin/rm -rf __MACOSX
 
 msg_fun
 }
@@ -66,6 +78,6 @@ else
     echo -e "    請使用root權限執行"
     echo -e "****************************"
     echo -e ""
+    sudo -s
     exit
 fi
-
