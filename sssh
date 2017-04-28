@@ -1,0 +1,49 @@
+#!/bin/bash
+
+
+SSHD=$(ps aux -c | grep sshd)
+
+main_fun(){
+clear
+echo -e ""
+echo -e "****************************"
+echo -e "    OPENSSH"
+echo -e "****************************"
+echo -e ""
+if [ "$SSHD" == "" ]; then
+    echo -e "    1) Start SSH"
+    echo -e ""
+else
+    echo -e "    2) Stop SSH"
+    echo -e ""
+fi
+echo -e "    x) EXIT"
+echo -e ""
+read OPT
+[[ "$OPT" ]]
+
+if [ "$OPT" == "1" ]; then
+	/bin/launchctl load /Library/LaunchDaemons/com.openssh.sshd.plist
+elif [ "$OPT" == "2" ]; then
+	/bin/launchctl unload /Library/LaunchDaemons/com.openssh.sshd.plist
+else
+    exit
+fi
+
+exit
+
+}
+
+if [ "$UID" == "0" ]; then
+    main_fun
+else
+    /usr/bin/clear
+    echo -e ""
+    echo -e "****************************"
+    echo -e "    required root privileges"
+    echo -e "****************************"
+    echo -e ""
+    su
+    exit
+fi
+
