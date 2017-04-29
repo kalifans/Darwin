@@ -1,0 +1,5 @@
+hfsplus "Ramdisk.dmg" grow "20640624"
+hfsplus "Ramdisk.dmg" extract "/usr/sbin/asr" "asr"
+hfsplus "Ramdisk.dmg" rm "/usr/sbin/asr"
+hfsplus "Ramdisk.dmg" add "asr" "/usr/sbin/asr"
+hfsplus "Ramdisk.dmg" chmod "/usr/sbin/asr" 100755
