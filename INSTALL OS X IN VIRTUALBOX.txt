@@ -1,0 +1,48 @@
+﻿Run Vanilla OS X El Capitan, Sierra, Yosemite or Mavericks in VirtualBox 5 on a Windows Host
+
+http://www.insanelymac.com/forum/topic/309654-run-vanilla-os-x-el-capitan-sierra-yosemite-or-mavericks-in-virtualbox-5010-on-a-windows-host/
+
+設定機種
+iMac11,3
+cd "C:\Program Files\Oracle\VirtualBox\"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/efi/0/Config/DmiSystemProduct" "iMac11,3"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/efi/0/Config/DmiSystemVersion" "1.0"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/efi/0/Config/DmiBoardProduct" "Mac-F2238BAE"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/smc/0/Config/DeviceKey" "ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/smc/0/Config/GetKeyFromRealSMC" 1
+
+MacBookPro11,3
+cd "C:\Program Files\Oracle\VirtualBox\"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/efi/0/Config/DmiSystemProduct" "MacBookPro11,3"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/efi/0/Config/DmiSystemVersion" "1.0"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/efi/0/Config/DmiBoardProduct" "Mac-2BD1B31983FE1663"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/smc/0/Config/DeviceKey" "ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/smc/0/Config/GetKeyFromRealSMC" 1
+
+Macmini6,2
+cd "C:\Program Files\Oracle\VirtualBox\"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/efi/0/Config/DmiSystemProduct" "Macmini6,2"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/efi/0/Config/DmiSystemVersion" "1.0"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/efi/0/Config/DmiBoardProduct" "Mac-F65AE981FFA204ED"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/smc/0/Config/DeviceKey" "ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc"
+VBoxManage setextradata "OSX1095" "VBoxInternal/Devices/smc/0/Config/GetKeyFromRealSMC" 1
+
+修改CPUID為 Lynnfield i5 750 CPU
+VBoxManage modifyvm "OSX1095" --cpuidset 00000001 000106e5 06100800 0098e3fd bfebfbff
+
+修改CPUID為 IvyBridge CPU
+VBoxManage modifyvm "OSX1095" --cpuidset 00000001 000306a9 04100800 7fbae3ff bfebfbff
+或
+VBoxManage modifyvm "OSX1095" --cpuidset 00000001 000306a9 00020800 80000201 178bfbf
+
+螢幕解析度:
+指定螢幕解析度為 640×480
+VBoxManage setextradata "MacOSX" "VBoxInternal2/EfiGopMode" 0  
+指定螢幕解析度為 800×600
+VBoxManage setextradata "MacOSX" "VBoxInternal2/EfiGopMode" 1
+指定螢幕解析度為 1024×768
+VBoxManage setextradata "MacOSX" "VBoxInternal2/EfiGopMode" 2  
+指定螢幕解析度為 1280×1024
+VBoxManage setextradata "MacOSX" "VBoxInternal2/EfiGopMode" 3
+指定螢幕解析度為 1440×900
+VBoxManage setextradata "MacOSX" "VBoxInternal2/EfiGopMode" 4  
