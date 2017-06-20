@@ -1,0 +1,57 @@
+Compiling GCC 7 on macOS
+
+* build gmp
+wget https://ftp.gnu.org/pub/gnu/gmp/gmp-6.1.2.tar.xz
+cd gmp-6.1.2
+mkdir build && cd build
+../configure --prefix=/usr/local/gcc/7.1.0 --enable-cxx
+make -j 2
+make install DESTDIR=gmp-6.1.2
+
+* build mpfr
+wget https://ftp.gnu.org/gnu/mpfr/mpfr-3.1.5.tar.gz
+cd mpfr-3.1.5
+mkdir build && cd build
+../configure --prefix=/usr/local/gcc/7.1.0 --with-gmp=/usr/local/gcc/7.1.0
+make -j 2
+make install DESTDIR=mpfr-3.1.5
+
+* build mpc
+https://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz
+cd mpc-1.0.3
+mkdir build && cd build
+../configure --prefix=/usr/local/gcc/7.1.0 \
+              --with-gmp=/usr/local/gcc/7.1.0 \
+              --with-mpfr=/usr/local/gcc/7.1.0
+make -j 2
+make install DESTDIR=mpc-1.0.3
+
+* build isl
+wget http://isl.gforge.inria.fr/isl-0.18.tar.gz
+cd isl-0.18
+mkdir build && cd build
+../configure --prefix=/usr/local/gcc/7.1.0 --with-gmp-prefix=/usr/local/gcc/7.1.0
+
+make -j 2
+make install DESTDIR=isl-0.18
+
+* build gcc
+wget https://ftp.gnu.org/gnu/gcc/gcc-7.1.0/gcc-7.1.0.tar.bz2
+cd gcc-7.1.0
+mkdir build && cd build
+../configure --prefix=/usr/local/gcc/7.1.0 \
+              --enable-checking=release \
+              --with-gmp=/usr/local/gcc/7.1.0 \
+              --with-mpfr=/usr/local/gcc/7.1.0 \
+              --with-mpc=/usr/local/gcc/7.1.0 \
+              --enable-languages=c,c++,objc,obj-c++,fortran \
+              --libdir=/usr/local/gcc/7.1.0/lib/gcc/7
+              --with-isl=/usr/local/gcc/7.1.0 \
+              --program-suffix=-7.1.0
+make -j 2
+make install DESTDIR=gcc-7.1.0
+
+
+* PATH:
+export PATH=/usr/local/gcc/7.1.0/bin:$PATH
+
