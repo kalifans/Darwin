@@ -1,6 +1,6 @@
-# Compiling GCC 7 on macOS
+Compiling GCC 7 on macOS
 
-# * build gmp
+# build gmp
 wget https://ftp.gnu.org/pub/gnu/gmp/gmp-6.1.2.tar.xz
 cd gmp-6.1.2
 mkdir build && cd build
@@ -8,7 +8,7 @@ mkdir build && cd build
 make -j 2
 make install DESTDIR=gmp-6.1.2
 
-# * build mpfr
+# build mpfr
 wget https://ftp.gnu.org/gnu/mpfr/mpfr-3.1.5.tar.gz
 cd mpfr-3.1.5
 mkdir build && cd build
@@ -17,7 +17,7 @@ mkdir build && cd build
 make -j 2
 make install DESTDIR=mpfr-3.1.5
 
-# * build mpc
+# build mpc
 https://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz
 cd mpc-1.0.3
 mkdir build && cd build
@@ -27,7 +27,7 @@ mkdir build && cd build
 make -j 2
 make install DESTDIR=mpc-1.0.3
 
-# * build isl
+# build isl
 wget http://isl.gforge.inria.fr/isl-0.18.tar.gz
 cd isl-0.18
 mkdir build && cd build
@@ -36,7 +36,7 @@ mkdir build && cd build
 make -j 2
 make install DESTDIR=isl-0.18
 
-# * build gcc
+# build gcc
 wget https://ftp.gnu.org/gnu/gcc/gcc-7.1.0/gcc-7.1.0.tar.bz2
 cd gcc-7.1.0
 mkdir build && cd build
@@ -61,9 +61,9 @@ make -j 2
 make install DESTDIR=gcc-7.1.0
 
 
-# * Install
+# Install
 libtool --finish /usr/local/gcc/7.1.0/lib
 
-# * PATH:
+# PATH:
 export PATH=/usr/local/gcc/7.1.0/bin:$PATH
 
