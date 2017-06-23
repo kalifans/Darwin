@@ -1,0 +1,12 @@
+iFile for IOS 6
+
+ssh root@<Mobile IP>
+
+Depends:
+apt-get install file-cmds zip unzip p7zip gzip bzip2 unrar diskdev-cmds
+
+cd /tmp
+wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/iFile-220-ios6.zip
+unzip iFile-220-ios6.zip
+tar xvf ifile-2.2.0.tar -C /Applications/
+./keygen
