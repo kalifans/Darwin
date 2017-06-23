@@ -1,0 +1,12 @@
+APT For IOS
+
+Cydia Find: APT 0.7 Strict
+
+or
+
+ssh root@<Mobile IP>
+cd /tmp
+wget http://apt.saurik.com/debs/berkeleydb_4.6.21-5_iphoneos-arm.deb
+wget http://apt.saurik.com/cydia/debs/apt7_0.7.25.3-8_iphoneos-arm.deb
+dpkg -i berkeleydb_4.6.21-5_iphoneos-arm.deb
+dpkg -i apt7_0.7.25.3-8_iphoneos-arm.deb
