@@ -1,0 +1,15 @@
+iFile 2.2.0-1 Crack
+
+ssh root@<Mobile IP>
+
+Depends:
+apt-get install file-cmds zip unzip p7zip gzip bzip2 unrar diskdev-cmds
+
+cd /tmp
+IOS 6
+wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/eu.heinelt.ifile_2.2.0-1_iphoneos-arm_ios6.deb
+dpkg -i eu.heinelt.ifile_2.2.0-1_iphoneos-arm_ios6.deb
+
+IOS 7/8/9
+wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/eu.heinelt.ifile_2.2.0-1_iphoneos-arm_julioverne.deb
+dpkg -i eu.heinelt.ifile_2.2.0-1_iphoneos-arm_julioverne.deb
