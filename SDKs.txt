@@ -1,0 +1,28 @@
+﻿取自 XCODE 4.6.3
+iPhoneOS6.1.sdk
+https://drive.google.com/open?id=0B2lUSb5iZaREWXRPa3hISm1OUG8
+MacOSX10.8.sdk
+https://drive.google.com/open?id=0B2lUSb5iZaREVW5FMWx2ZFM2NzA
+
+取自 XCODE 5.0.2
+iPhoneOS7.0.sdk
+https://drive.google.com/open?id=0B2lUSb5iZaREQzhKbHBmSm5qcjA
+MacOSX10.9.sdk
+https://drive.google.com/open?id=0B2lUSb5iZaREYi04NERwQXFiZ3c
+
+取自 XCODE 6.1.1
+iPhoneOS8.1.sdk
+https://drive.google.com/open?id=0B2lUSb5iZaREaTg2Nk14eURqQkE
+MacOSX10.10.sdk
+https://drive.google.com/open?id=0B2lUSb5iZaREaUhaQ0pSYzU3cFE
+
+取自 XCODE 7.1.1
+iPhoneOS9.1.sdk
+https://drive.google.com/open?id=0B2lUSb5iZaRETDdmbG5TZlNITjg
+MacOSX10.11.sdk
+https://drive.google.com/open?id=0B2lUSb5iZaREX2tfTFNPelVEVms
+
+iPhoneOS6.1.sdk 缺少 Headers 文件可從 MacOSX10.8.sdk 複製
+iPhoneOS7.0.sdk 缺少 Headers 文件可從 MacOSX10.9.sdk 複製
+iPhoneOS8.1.sdk 缺少 Headers 文件可從 MacOSX10.10.sdk 複製
+iPhoneOS9.1.sdk 缺少 Headers 文件可從 MacOSX10.11.sdk 複製
