@@ -2,9 +2,18 @@ Mac OS X Cross-compiler for iOS arm
 
 CommandLineTools + SDK
 
+到 https://developer.apple.com/download/more/ 下載 Command Line Tools 安裝
+
+然後下載 IOS SDK https://raw.githubusercontent.com/kalifans/Darwin/IOS/SDKs.txt
+解壓縮到 HOME/SDKs 目錄
+mkdir $HOME/SDKs
+cd $HOME/SDKs
+tar Jxvf <SDK>.tar.xz
+
+設置編譯環境參數(範例 iPhoneOS6.1)
 export SDKROOT="$HOME/SDKs/iPhoneOS6.1.sdk"
-export CC=$(xcrun -f clang)
-export CXX=$(xcrun -f clang++)
+export CC="$(xcrun -f clang) -arch armv7" 或 export CC="$(xcrun -f gcc) -arch armv7"
+export CXX="$(xcrun -f clang++) -arch armv7" 或 export CXX="$(xcrun -f g++) -arch armv7"
 export LD=$(xcrun -f ld)
 export AR=$(xcrun -f ar)
 export AS=$(xcrun -f as)
@@ -17,7 +26,30 @@ export CXXFLAGS=$CFLAGS
 
 cd src
 ./configure --host=i386-apple-darwin --target=armv7-apple-darwin --build=armv7-apple-darwin
+或
+./Configure iphoneos-cross
 
 make
 mkdir pkg
 make install DESTDIR=pkg
+
+製作套件 (範例 nmap)
+cd pkg
+mkdir DEBIAN
+
+cat << EOF > DEBIAN/control
+Package: nmap
+Name: Nmap
+Priority: standard
+Section: Networking
+Installed-Size: 25900
+Maintainer: Jay Freeman (saurik) <saurik@saurik.com>
+Architecture: iphoneos-arm
+Version: 7.50-1
+Pre-Depends: dpkg (>= 1.14.25-8)
+Depends: libpcap, openssl, pcre
+Description: analyze and scan remote network hosts
+EOF
+
+cd ..
+dpkg-deb --build --uniform-compression -Zgzip pkg nmap_7.50-1_iphoneos-arm.deb
