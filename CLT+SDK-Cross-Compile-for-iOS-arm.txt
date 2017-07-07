@@ -1,0 +1,23 @@
+Mac OS X Cross-compiler for iOS arm
+
+CommandLineTools + SDK
+
+export SDKROOT="$HOME/SDKs/iPhoneOS6.1.sdk"
+export CC=$(xcrun -f clang)
+export CXX=$(xcrun -f clang++)
+export LD=$(xcrun -f ld)
+export AR=$(xcrun -f ar)
+export AS=$(xcrun -f as)
+export NM=$(xcrun -f nm)
+export RANLIB=$(xcrun -f ranlib)
+export CFLAGS="-I$SDKROOT/usr/include/ -arch armv7 -g -O2 -isysroot $SDKROOT -miphoneos-version-min=6.1"
+export LDFLAGS="-L$SDKROOT/usr/lib/ -arch armv7"
+export CPPFLAGS=$CFLAGS
+export CXXFLAGS=$CFLAGS
+
+cd src
+./configure --host=i386-apple-darwin --target=armv7-apple-darwin --build=armv7-apple-darwin
+
+make
+mkdir pkg
+make install DESTDIR=pkg
