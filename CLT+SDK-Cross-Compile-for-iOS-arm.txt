@@ -4,6 +4,9 @@ CommandLineTools + SDK
 
 到 https://developer.apple.com/download/more/ 下載 Command Line Tools 安裝
 
+指定Developer路徑
+sudo xcode-select --switch /Library/Developer/CommandLineTools
+
 然後下載 IOS SDK https://raw.githubusercontent.com/kalifans/Darwin/IOS/SDKs.txt
 解壓縮到 HOME/SDKs 目錄
 mkdir $HOME/SDKs
