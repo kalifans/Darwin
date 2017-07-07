@@ -2,7 +2,7 @@ Mac OS X Cross-compiler for iOS arm
 
 Xcode
 
-SDKROOT=$(xcrun --sdk iphoneos6.1 --show-sdk-path)
+SDKROOT=$(xcrun --sdk iphoneos --show-sdk-path)
 export CC=$(xcrun -f clang)
 export CXX=$(xcrun -f clang++)
 export LD=$(xcrun -f ld)
