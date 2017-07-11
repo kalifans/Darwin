@@ -1,0 +1,4 @@
+echo "deb http://cydia.angelxwind.net/ ./" >> /var/mobile/Library/Caches/com.saurik.Cydia/sources.list
+echo "deb http://cydia.angelxwind.net/ ./" >> /etc/apt/sources.list.d/cydia.list
+
+apt-get install net.angelxwind.appsyncunified
