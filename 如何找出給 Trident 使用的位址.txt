@@ -1,0 +1,277 @@
+如何找出給 Trident 使用的位址
+
+Kernelcache的keys可以在The iPhone Wiki上找到, 還有kcache tool可以decrypt跟decompress所有的IMG3 kernelcache。
+
+基礎知識
+
+    在disassembler找到的所有地址都要減掉 0x80001000
+    如果搜尋不到 hex 字串，試著從尾部刪除幾個字元後再搜尋，但不要刪除太多以免找到重複的字串
+
+find_OSSerializer_serialize()
+
+    搜尋函數 OSSerializer::serialize
+
+find_OSSymbol_getMetaClass()
+
+    搜尋函數 OSSymbol::getMetaClass
+
+find_calend_gettime()
+
+    搜尋 90 B5 01 AF 82 B0 04 46 01 A8 69 46 FF F7
+
+	或函數 _clock_get_calendar_nanotime 第一個調用來源
+	
+find_bufattr_cpx()
+
+    搜尋函數 _bufattr_cpx
+
+find_clock_ops()
+
+搜尋 F0 BD 03 46 10 68 01 28 1C BF
+找到第一個調用來源位址
+
+find_copyin()
+
+    搜尋函數 _copyin
+
+find_bx_lr()
+
+    搜尋函數 _bufattr_cpx  來到
+__TEXT:__text:800DA838 _bufattr_cpx
+__TEXT:__text:800DA838                 LDR             R0, [R0]
+__TEXT:__text:800DA83A                 BX              LR    <<< 這裡
+
+__TEXT:__text:800DA83A - 80001000 = 0xD983A
+find_bx_lr offset = 0xD983A
+
+
+find_write_gadget()
+
+    搜尋 0C 10 80 E5 1E FF 2F E1
+
+find_vm_kernel_addrperm()
+
+    搜尋函數 _buf_kernel_addrperm_addr 來到
+__TEXT:__text:800DD730 _buf_kernel_addrperm_addr
+__TEXT:__text:800DD730                 CMP             R0, #0
+__TEXT:__text:800DD732                 ITT EQ
+__TEXT:__text:800DD734                 MOVEQ           R0, #0
+__TEXT:__text:800DD736                 BXEQ            LR
+__TEXT:__text:800DD738                 MOV             R1, #(dword_804567F0 - 0x800DD744)
+__TEXT:__text:800DD740                 ADD             R1, PC ; dword_804567F0
+__TEXT:__text:800DD742                 LDR             R1, [R1,#(dword_80456848 - 0x804567F0)]   <<< 這裡
+
+LDR R1, [R1 的 dword_80456848 值 剪掉基址 0x80001000 再剪 0x04 就是所要的位址
+
+dword_80456848 - 80001000 - 0x4 = 0x455844
+find_vm_kernel_addrperm offset = 0x455844
+
+find_kernel_pmap()
+
+    搜尋 _kernel_pmap
+
+find_flush_dcache()
+
+    搜尋  00 00 A0 E3 5E 0F 07 EE
+	會找到兩個 第一個才是
+
+find_invalidate_tlb()
+
+    搜尋  00 00 A0 E3 17 0F 08 EE 4B F0 7F F5 6F F0 7F F5 1E FF 2F
+	
+find_task_for_pid()
+
+    搜尋 F0 B5 03 AF 2D E9 00 0D 84 B0 01 46 91 E8 41
+
+find_setreuid()
+
+    搜尋  80 B5 6F 46 81 B0 0C 21 00 22 00 91 00 21 00 23 EE F7
+
+找到這段代碼
+__TEXT:__text:802BAE30 sub_802BAE30 
+__TEXT:__text:802BAE30                 PUSH            {R7,LR}
+__TEXT:__text:802BAE32                 MOV             R7, SP
+__TEXT:__text:802BAE34                 SUB             SP, SP, #4
+__TEXT:__text:802BAE36                 MOVS            R1, #0xC
+__TEXT:__text:802BAE38                 MOVS            R2, #0
+__TEXT:__text:802BAE3A                 STR             R1, [SP,#0xC+var_C]
+__TEXT:__text:802BAE3C                 MOVS            R1, #0
+__TEXT:__text:802BAE3E                 MOVS            R3, #0
+__TEXT:__text:802BAE40                 BL              sub_802A9BA4
+__TEXT:__text:802BAE44                 MOVS            R0, #0x4E
+__TEXT:__text:802BAE46                 ADD             SP, SP, #4
+__TEXT:__text:802BAE48                 POP             {R7,PC}
+
+找 sub_802BAE30 的調用來源
+__DATA:__const:803E3BF0                 DCD sub_802BAE30
+__DATA:__const:803E3BF4                 DCB    1
+__DATA:__const:803E3BF5                 DCB    0
+__DATA:__const:803E3BF6                 DCB    0
+__DATA:__const:803E3BF7                 DCB    0
+__DATA:__const:803E3BF8                 DCB    0
+__DATA:__const:803E3BF9                 DCB    0
+__DATA:__const:803E3BFA                 DCB    0
+__DATA:__const:803E3BFB                 DCB    0
+__DATA:__const:803E3BFC                 DCD sub_802A4AB4 這裡
+
+sub_802A4AB4 去掉基址 = 0x2A3AB4
+
+
+
+find_pid_check()
+
+	find_task_for_pid + find_pid_check = pid_check_addr
+
+find_task_for_pid 代碼
+__TEXT:__text:802FF034                 PUSH            {R4-R7,LR}
+__TEXT:__text:802FF036                 ADD             R7, SP, #0xC
+__TEXT:__text:802FF038                 PUSH.W          {R8,R10,R11}
+__TEXT:__text:802FF03C                 SUB             SP, SP, #0x10
+__TEXT:__text:802FF03E                 MOV             R1, R0
+__TEXT:__text:802FF040                 LDMIA.W         R1, {R0,R6}
+__TEXT:__text:802FF044                 LDR             R5, [R1,#8]
+__TEXT:__text:802FF046                 MOVS            R1, #0
+__TEXT:__text:802FF048                 STR             R1, [SP,#0x28+var_1C]
+__TEXT:__text:802FF04A                 CMP             R6, #0                   ;pid_check_addr
+
+pid_check_addr(0x802FF04A) - find_task_for_pid(0x802FF034) = find_pid_check(0x16)
+
+
+
+find_posix_check()
+
+	find_task_for_pid + find_posix_check = posix_check_ret_addr
+
+find_task_for_pid 代碼
+__TEXT:__text:802FF034                 PUSH            {R4-R7,LR}
+__TEXT:__text:802FF036                 ADD             R7, SP, #0xC
+__TEXT:__text:802FF038                 PUSH.W          {R8,R10,R11}
+__TEXT:__text:802FF03C                 SUB             SP, SP, #0x10
+__TEXT:__text:802FF03E                 MOV             R1, R0
+__TEXT:__text:802FF040                 LDMIA.W         R1, {R0,R6}
+__TEXT:__text:802FF044                 LDR             R5, [R1,#8]
+__TEXT:__text:802FF046                 MOVS            R1, #0
+__TEXT:__text:802FF048                 STR             R1, [SP,#0x28+var_1C]
+__TEXT:__text:802FF04A                 CMP             R6, #0
+__TEXT:__text:802FF04C                 STR             R1, [SP,#0x28+var_20]
+__TEXT:__text:802FF04E                 BEQ.W           loc_802FF1B2
+__TEXT:__text:802FF052                 BL              _port_name_to_task
+__TEXT:__text:802FF056                 STR             R0, [SP,#0x28+var_1C]
+__TEXT:__text:802FF058                 CMP             R0, #0
+__TEXT:__text:802FF05A                 BEQ.W           loc_802FF1B2
+__TEXT:__text:802FF05E                 MOV             R0, R6
+__TEXT:__text:802FF060                 BL              _proc_find
+__TEXT:__text:802FF064                 MOV             R10, R0
+__TEXT:__text:802FF066                 CMP.W           R10, #0
+__TEXT:__text:802FF06A                 BEQ.W           loc_802FF1C0
+__TEXT:__text:802FF06E                 MOV             R0, R10
+__TEXT:__text:802FF070                 BL              sub_80300A04
+__TEXT:__text:802FF074                 CMP             R0, #0        ; posix_check_ret_addr
+
+posix_check_ret_addr(0x802FF074) - find_task_for_pid(0x802FF034) = find_posix_check(0x40)
+
+
+
+find_mac_proc_check()
+
+find_task_for_pid + find_mac_proc_check = mac_proc_check_ret_addr
+
+find_task_for_pid 裡, 找到這段代碼
+__TEXT:__text:802FF2FA loc_802FF2FA
+__TEXT:__text:802FF2FA                 LDR             R0, [SP,#0x28+var_1C]
+__TEXT:__text:802FF2FC                 BL              _task_deallocate
+__TEXT:__text:802FF300                 ADD             R0, SP, #0x28+var_20
+__TEXT:__text:802FF302                 MOV             R1, R5
+__TEXT:__text:802FF304                 MOVS            R2, #4
+__TEXT:__text:802FF306                 BLX             _copyout
+__TEXT:__text:802FF30A                 CMP.W           R10, #0
+__TEXT:__text:802FF30E                 ITT NE
+__TEXT:__text:802FF310                 MOVNE           R0, R10
+__TEXT:__text:802FF312                 BLNE            _proc_rele
+
+往上找 loc_802FF2FA 的跳轉來源
+
+__TEXT:__text:802FF258 loc_802FF258 (mac_proc_check_ret_addr)
+__TEXT:__text:802FF258                 CMP.W           R11, #0
+__TEXT:__text:802FF25C                 BEQ             loc_802FF264
+__TEXT:__text:802FF25E                 MOVS            R6, #5
+__TEXT:__text:802FF260                 LDR             R5, [SP,#0x28+var_28]
+__TEXT:__text:802FF262                 B               loc_802FF2FA 跳轉來源
+
+mac_proc_check_ret_addr(0x802FF258) - find_task_for_pid(0x802FF034) = find_mac_proc_check(0224)
+
+
+
+find_branch()
+
+	find_setreuid + find_branch = branch_addr
+
+find_setreuid 代碼
+__TEXT:__text:802AB31C                 PUSH            {R4-R7,LR}
+__TEXT:__text:802AB31E                 ADD             R7, SP, #0xC
+__TEXT:__text:802AB320                 PUSH.W          {R8,R10,R11}
+__TEXT:__text:802AB324                 SUB             SP, SP, #0x14
+__TEXT:__text:802AB326                 MOV             R8, R0
+__TEXT:__text:802AB328                 MOV             R11, R1
+__TEXT:__text:802AB32A                 STR.W           R11, [SP,#0x2C+var_28]
+__TEXT:__text:802AB32E                 STR.W           R8, [SP,#0x2C+var_24]
+__TEXT:__text:802AB332                 LDMIA.W         R11, {R5,R6}
+__TEXT:__text:802AB336                 BL              _kauth_cred_proc_ref
+__TEXT:__text:802AB33A                 MOV             R4, R0
+__TEXT:__text:802AB33C                 CMP.W           R6, #0xFFFFFFFF
+__TEXT:__text:802AB340                 STR             R4, [SP,#0x2C+var_1C]
+__TEXT:__text:802AB342                 ADD.W           R10, R8, #0x8C
+__TEXT:__text:802AB346                 IT EQ
+__TEXT:__text:802AB348                 MOVEQ           R6, #0xFFFFFF9B
+__TEXT:__text:802AB34C                 CMP.W           R5, #0xFFFFFFFF
+__TEXT:__text:802AB350                 ADD.W           R8, R8, #0xC0
+__TEXT:__text:802AB354                 IT EQ
+__TEXT:__text:802AB356                 MOVEQ           R5, #0xFFFFFF9B
+__TEXT:__text:802AB35A                 B               loc_802AB370      : branch_addr
+
+branch_addr(0x802AB35A) - find_setreuid(0x802AB31C) = find_branch(0x3e)
+
+find_branch_target()
+
+find_branch_target 是 branch_addr 的跳轉目標的修改值 所以要先找到跳轉的目的地 然後計算跳轉偏移
+
+找到這段代碼
+__TEXT:__text:802AB400 loc_802AB400
+__TEXT:__text:802AB400                 LDR             R0, [R4,#0x14]
+__TEXT:__text:802AB402                 LDR.W           R1, [R11]
+__TEXT:__text:802AB406                 CMP             R0, R1
+__TEXT:__text:802AB408                 BNE             loc_802AB410
+__TEXT:__text:802AB40A                 MOV             R3, #0xFFFFFF9B
+__TEXT:__text:802AB40E                 B               loc_802AB42E
+__TEXT:__text:802AB410 ; ---------------------------------------------------------------------------
+__TEXT:__text:802AB410 loc_802AB410
+__TEXT:__text:802AB410                 LDR.W           R1, [R11,#4]
+__TEXT:__text:802AB414                 CMP             R0, R1
+__TEXT:__text:802AB416                 BNE             loc_802AB41E
+__TEXT:__text:802AB418                 MOV             R3, #0xFFFFFF9B
+__TEXT:__text:802AB41C                 B               loc_802AB42E
+__TEXT:__text:802AB41E ; ---------------------------------------------------------------------------
+
+往上找 loc_802AB400 的跳轉來源
+__TEXT:__text:802AB3DE loc_802AB3DE
+__TEXT:__text:802AB3DE                 CMN.W           R6, #0x65       ; 這裡就是跳轉目標
+__TEXT:__text:802AB3E2                 BEQ             loc_802AB3FE
+__TEXT:__text:802AB3E4                 MOV             R3, R0
+__TEXT:__text:802AB3E6                 CMP             R0, R6
+__TEXT:__text:802AB3E8                 BEQ             loc_802AB400
+__TEXT:__text:802AB3EA
+__TEXT:__text:802AB3EA loc_802AB3EA 
+__TEXT:__text:802AB3EA                 LDREX.W         R0, [R8]
+__TEXT:__text:802AB3EE                 ORR.W           R0, R0, #0x100
+__TEXT:__text:802AB3F2                 STREX.W         R1, R0, [R8]
+__TEXT:__text:802AB3F6                 CMP             R1, #0
+__TEXT:__text:802AB3F8                 BNE             loc_802AB3EA
+__TEXT:__text:802AB3FA                 MOV             R3, R6
+__TEXT:__text:802AB3FC                 B               loc_802AB400
+
+先算出 branch_addr 到 跳轉目標的偏移量
+跳轉目標(802AB3DE) - branch_addr(802AB35A) = 偏移量(0x84)
+
+偏移量(0x84) - 0x04 / 2 = branch_addr 跳轉值(0x40)
+
+branch_addr 位址上的操作代碼是 B loc_XXXXXXXX  XX E0 所以修改後的值是 40 E0 (偏移量 操作代碼 B) = 0xE040
