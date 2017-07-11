@@ -1,0 +1,65 @@
+Starting with GNU sed on Mac OSX
+
+If you are a hard-core Linux user who just bought a shiny new Mac machine, you are going to have a big surprise realizing that not every command line skill you acquired over the years will be directly applicable in a Mac Terminal. Take for example the humble and useful sed editor, invaluable when you need to modify on the fly a bunch of text files. You probably assume you could just fire up a Terminal and get your work done. Well it is not so simple, Mac OSX has his roots in Unix just like Linux, but it has a different flavour of command line utilities, a BSD one. On the other hand Linux uses the GNU version of these command line tools. Small but subtle differences have accumulated over the years.
+
+Let’s try a small experiment, I have a folder filled with html files in which I want to change every occurrence of a website address. In Linux I could write this in a console:
+
+1 sed -i 's/old-address/new-address/g' *.html
+
+What I’m trying to do is to change https://solarianprogrammer.com/wp-content/uploads into /images. Look what my Mac has to say about this:
+
+1 sol:~ sed -i 's/https:\/\/solarianprogrammer.com\/wp-content\/uploads/\/images/g' *.html
+2 sed: 1: "tst.html": undefined label 'st.html'
+3 sol:~
+
+Even if Apple’s sed is not happy with it, the above is a perfectly valid GNU sed command.
+
+You have two solutions: first RTFM which in a polite form means read the man page, or you could cheat and install GNU sed from sources. There is obviously a third solution to write a small and portable script in your preferred poison: Python, Ruby, Perl - all of them already installed on your machine. Not mentioning that you could write a Bash script if you feel inclined. I’ll take the path of minimum effort and compile GNU sed from source. In the next part of this post I will assume that you have already installed Xcode on your system. If you use Xcode 4.3 and up, please note that Apple has removed the CLI tools from the main installer, you could however install them from Xcode.
+
+First you need to download the last stable version of sed, currently 4.2, from ftp://ftp.gnu.org/gnu/sed/ and extract this on your machine, cd to the extracted directory and configure the package. Since we don’t want to mess with Apple’s default sed, we’ll chose to add a suffix to GNU’s version, for convenience we’ll install sed in /usr:
+
+1 mkdir build && cd build
+2 ../configure --prefix=/usr/sed-4.4 --program-suffix=-4.4
+
+If everything goes well and you see no error message, we can compile and install sed:
+
+1 make -j 8
+2 sudo make install
+
+In order to be able to use GNU sed we’ll need to add it to our shell’s path with:
+
+1 export PATH=/usr/sed-4.2/bin:$PATH
+
+If you don’t want to write/paste the above line each time you want to have sed available, you could add it at the end of your .bashrc file, after that GNU sed will be always at your finger tips. Let’s try again to modify our bunch of html files:
+
+1 sed-4.2 -i 's/https:\/\/solarianprogrammer.com\/wp-content\/uploads/\/images/g' *.html
+
+If you want to learn more about using sed, there is a good book sed & awk by Dale Dougherty and Arnold Robbins:
+
+
+==========================================
+
+
+First, you must make sure that the current Xcode developer directory is set:
+
+# xcode-select -p
+
+This should output something like this: /Applications/Xcode.app/Contents/Developer If you want to change this, for example to switch between Xcode 6 and Xcode 5 (or if that command outputted a blank line), you would use xcode-select as follows:
+
+# xcode-select -s /Applications/OldXcode.app/Contents/Developer
+
+With that done, next you will need to choose an SDK to use. Since you're trying to build for iPhone, it would be some version of the iPhoneOS SDK. You can find which version it will try to use by default using this command:
+
+# xcrun --sdk iphoneos --show-sdk-version
+
+Which will output something like 7.1 . If you need a different SDK version, you can provide it by using the specific SDK name with the version, i.e. iphoneos7.1. This of course must already be installed in the version of Xcode that you selected with xcode-select.
+
+So assuming you have all those ducks in a row, using that information to cross compile is pretty easy. For example:
+
+# make CC="$(xcrun --sdk iphoneos --find clang) -isysroot $(xcrun --sdk iphoneos --show-sdk-path | sed s/7.0.sdk/6.1.sdk/g) -arch armv7 -arch armv7s -arch arm64"
+
+This will pass the CC commands through xcrun, with the arguments to use the current iphoneos SDK of the Xcode set by xcode-select, building using the SDK root as the sys root and building for architectures armv7, armv7s, and arm64. Building for the iOS Simulator would be similar to the above, but passing the iphonesimulator in place of iphoneos as the SDK, and setting the architectures to i386 and x86_64.
+
+With that, things should pretty much just work and you may not need to do anything further -- unfortunately I'm not in a position to try this myself and I'm referring to notes from a previous project. You may run into subsequent issues that are specific to OpenSSL or it's build scripts.
+
+Note that all of the above can be used to compile for MacOS X as well, obviously with different SDK and architecture values.
