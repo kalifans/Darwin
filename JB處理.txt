@@ -1,0 +1,23 @@
+ssh root@192.168.137.212
+
+/sbin/mount -t hfs -o update,rw /dev/disk0s1s1 /
+
+/sbin/mount -t hfs -o update,rw,dev,suid /dev/disk0s1s2 /private/var
+
+掛載
+sed -i s/ro/rw/g /private/etc/fstab
+sed -i s/,nosuid,nodev//g /private/etc/fstab
+
+越獄後處理
+launchctl list | grep "softwareupdated"
+
+launchctl load /System/Library/LaunchDaemons/com.apple.mobile.softwareupdated.plist
+launchctl load /System/Library/LaunchDaemons/com.apple.OTATaskingAgent.plist
+launchctl load /System/Library/LaunchDaemons/com.apple.softwareupdateservicesd.plist
+
+launchctl unload com.apple.mobile.softwareupdated.plist
+launchctl unload com.apple.OTATaskingAgent.plist
+launchctl unload com.apple.softwareupdateservicesd.plist
+
+rm /System/Library/LaunchDaemons/com.apple.mobile.softwareupdated.plist
+rm /System/Library/LaunchDaemons/com.apple.softwareupdateservicesd.plist
