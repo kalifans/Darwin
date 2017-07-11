@@ -1,0 +1,35 @@
+IPA 簽名/Volumes/DATA/docs/IPA 簽名
+
+
+unzip ${ipaName}.ipa
+
+rm -r Payload/*.app/_CodeSignature
+
+cp embedded.mobileprovision Payload/Terminal.app/
+
+APPNAME="Terminal"
+DEV_NAME="iPhone Developer: fansmint@zoho.com.cn (MHC9PRPE9Q)"
+
+codesign -f -s "$DEV_NAME" Payload/"$APPNAME".app/
+
+codesign -f -s "$DEV_NAME" --resource-rules Payload/"$APPNAME".app/ResourceRules.plist Payload/"$APPNAME".app/
+
+codesign -f -s "$DEV_NAME" --entitlements entitlements.plist Payload/"$APPNAME".app
+
+zip -r "$APPNAME".ipa Payload
+
+
+
+http://www.lhjzzu.com/2016/05/03/ios-ipa-codesign/
+
+embedded.mobileprovision 提取
+security cms -D -i Payload/demo.app/embedded.mobileprovision > embedded.mobileprovision.plist
+
+先使用/usr/libexec/PlistBuddy命令打印DeveloperCertificates的第一个证书，然后将打印的数据通过unix管道直接作为openssl命令的输入，接收到输入的数据之后，再存放为pem格式的证书文件
+/usr/libexec/PlistBuddy -c 'Print DeveloperCertificates:0' embedded.mobileprovision.plist | openssl x509 -inform DER -out demo.pem
+
+然后再通过openssl来查看证书的信息，关于证书详细的信息，参照前面的加解密基础知识
+openssl x509 -inform pem -in demo.pem -noout -text
+
+提取 entitlements.plist
+codesign -d --entitlements - Payload/iosunlock.app
