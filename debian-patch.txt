@@ -1,0 +1,4 @@
+PATCH=$(/usr/bin/find * | /usr/bin/grep '.patch')
+for i in $PATCH; do
+    /usr/bin/patch -p0 -i  "$i"
+done
