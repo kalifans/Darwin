@@ -1,0 +1,23 @@
+linux Mint 字型&終端機主題 for Mac
+
+字體
+wget https://github.com/kalifans/Darwin/raw/OSX/linux-fonts-for-mac.zip
+
+下載後解壓縮
+打開字體簿添加字體
+記事本 字型 DejaVu Sans Mono 大小 14-18
+
+bashrc 修改
+打開 open /private/etc/bashrc (建議用 Sublime Text 編輯)
+PS1='\h:\W \u\$ '
+改為
+PS1='\[\033[1;34m\]\u\[\033[1;32m\]@\[\033[1;32m\]\h\[\033[1;32m\]: \[\033[1;36m\]\w \[\033[1;33m\]\$ \[\033[0m\]'
+
+終端機色彩主題
+https://github.com/kalifans/Darwin/blob/OSX/Tango.terminal.zip
+
+下載後解壓縮
+打開終端機偏好設置 輸入 Tango.terminal
+最好能刪除其他色彩主題 那另開終端機主題就會自動使用 Tango 
+
+終端機字型大小: DejaVu sans Mono Book 12
