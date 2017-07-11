@@ -1,0 +1,35 @@
+壓縮 SDKs
+open /Volumes/Xcode/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs
+open /Volumes/Xcode/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
+
+mkdir $HOME/SDKs
+open $HOME/SDKs
+
+cp sdk to $HOME/SDKs/
+
+清除 .DS_Store
+cd $HOME/SDKs
+DS=$(/usr/bin/find * | /usr/bin/grep '.DS_Store')
+for i in $DS; do
+    /bin/rm "$i"
+done
+
+SDK="iPhoneOS8.1.sdk"
+SDK="MacOSX10.11.sdk"
+
+tar Jcvf /Volumes/DATA/SDKs/"$SDK".tar.xz "$SDK"/
+
+解壓縮 SDKs
+mkdir $HOME/SDKs
+cd $HOME/SDKs
+
+SDK="iPhoneOS6.1.sdk"
+SDK="MacOSX10.8.sdk"
+
+tar Jxvf /Volumes/DATA/SDKs/"$SDK".tar.xz
+
+export SDK PATH
+IOSSDKROOT="$HOME/SDKs/iPhoneOS6.1.sdk"
+export CFLAGS="-I$SDKROOT/usr/include/ -arch armv7"
+export LDFLAGS="-L$SDKROOT/usr/lib/ -arch armv7"
+
