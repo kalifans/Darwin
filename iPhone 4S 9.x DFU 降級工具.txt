@@ -1,0 +1,124 @@
+iPhone 4S (9.1 / 9.3.4) DFU 降級工具
+
+# ************************************************
+# *** 必要工具
+# ************************************************
+# libimobiledevice
+Mac:
+安裝 brew
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+安裝 libimobiledevice 與 IOS 工具組
+$ brew update
+$ brew install libimobiledevice
+$ brew cask install osxfuse
+$ brew install homebrew/fuse/ifuse
+
+Linux:
+Linux 版本需要安裝 libimobiledevice 套件，才能連接 iPhone，各版本安裝方式不同。
+
+Windows:
+到 apple 下載 iTunes 安裝即可。
+
+# idevicerestore
+Mac/linux:
+git clone https://github.com/libimobiledevice/idevicerestore.git
+cd idevicerestore
+./autogen.sh
+make
+sudo make install
+cd ..
+
+Windows:
+Windopws 版已經附在 Odysseus-win.zip 內。
+
+# Odysseus
+linux/mac:
+https://github.com/Mint-Fans/linux-package/blob/IOS/odysseus-0.999.0.zip
+或
+https://github.com/Mint-Fans/linux-package/blob/IOS/odysseusOTA-v1.0.2.zip
+
+Windows:
+https://github.com/Mint-Fans/linux-package/blob/IOS/Odysseus-win.zip
+
+OpenSSL (Odysseus 與 idevicerestore 依賴)
+Windows 版本必須安裝，不然 Odysseus 與 idevicerestore 無法使用。
+https://github.com/Mint-Fans/linux-package/blob/IOS/OpenSSL-win.zip
+
+# iPhone 4S IOS 6.1.3 固件
+http://appldnld.apple.com/iOS6.1/091-2611.20130319.Fr54r/iPhone4,1_6.1.3_10B329_Restore.ipsw
+
+# Trident-kloader
+https://github.com/Mint-Fans/linux-package/raw/IOS/Trident-kloader-0.2-ios9.1.ipa.zip
+
+Trident-kloader 0.3 源碼 for IOS 9.1 / 9.3.4
+https://github.com/Mint-Fans/linux-package/raw/IOS/Trident-kloader-src-0.3.zip
+
+# impactor
+http://iphonecydiaios.com/download-cydia-impactor/
+
+
+# ************************************************
+# *** 自製刷機固件
+# ************************************************
+
+# 有備份shsh的降級步驟
+製作刷機固件
+Odysseus 下載後解壓縮 cd 到 ipsw 目錄位置
+
+使用方法: ipsw <輸入原始固件> <輸出製作固件>  -bbupdate
+Linux /mac:
+$ ./ipsw iPhone4,1_6.1.3_restore.ipsw custom_downgrade.ipsw -bbupdate
+
+Windows:
+> ipsw.exe iPhone4,1_6.1.3_restore.ipsw custom_downgrade.ipsw -bbupdate
+
+提取 shsh (在windows底下)
+參考 http://bbs.feng.com/forum.php?mod=viewthread&tid=10072722
+使用愛思下載 shsh，然後使用「降级工具（终极版）」自動修改 shsh。
+在 windows 桌面會得到一個「已修改好的完整shsh」文件夾，裡面有兩個文件。
+在 Odysseus 目錄內建立一個 shsh 文件夾。
+
+linux/Mac:
+2700125700872-iphone4,1-6.1.3.shsh 放在 Odysseus/macos/shsh/
+precious.plist 放在 Odysseus/macos/
+
+Windiows:
+2700125700872-iphone4,1-6.1.3.shsh 放在 Odysseus/shsh/
+precious.plist 放在 Odysseus/
+
+# 無shsh的降級步驟
+參考 http://bbs.feng.com/forum.php?mod=viewthread&tid=10072722
+
+
+# ************************************************
+# *** 開始降級 *** 
+# ************************************************
+* 安裝 Trident-kloader 到 iPhone
+打開 impactor ，將 Trident-kloader.ipa 拖到 impactor 窗口。
+然後輸入 Apple Developer 帳號與密碼，進行安裝。
+
+http://i.imgur.com/HpDpC7v.png
+
+啟動 Trident 點擊 Start
+過一會，會看到 iPhone 顯示「Waiti Exec Sleep Mode」。
+然後再使用 idevicediagnostics 進入DFU模式。
+打開終端機執行:
+Linux/Mac:
+$ idevicediagnostics sleep
+
+Windows:
+cd xxxxx\idevicerestore-win
+idevicediagnostics.exe sleep
+
+畫面變黑後，按一下 Home 鍵才會進入 DFU 模式。
+進入 DFU 模式後就可開始用 idevicerestore 刷機降級。
+
+Linux/Mac:
+$ idevicerestore -e custom_downgrade.ipsw
+
+Windows:
+cd xxxxx\idevicerestore-win
+> idevicerestore.exe -e  custom_downgrade.ipsw
+
+開始刷機 ...
