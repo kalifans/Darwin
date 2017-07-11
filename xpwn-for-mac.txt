@@ -1,0 +1,25 @@
+====================
+xpwn
+====================
+依賴函式庫
+zlib openssl bzip2 libusb libpng 1.2.50
+$ sudo apt-get install libssl-dev zlib1g-dev libbz2-dev libusb-dev libpng12-dev
+
+Mac
+https://homebrew.bintray.com/bottles/libpng@1.2-1.2.54.el_capitan.bottle.tar.gz
+https://homebrew.bintray.com/bottles/libpng@1.2-1.2.54.yosemite.bottle.tar.gz
+https://homebrew.bintray.com/bottles/libpng@1.2-1.2.54.mavericks.bottle.tar.gz
+
+安裝cmake
+$ sudo apt-get install cmake
+
+編譯並製作套件
+$ git clone https://github.com/planetbeing/xpwn.git
+$ mkdir build
+$ cd build
+$ cmake ~/xpwn
+$ ln -s /usr/local/Cellar/openssl/1.0.2k/include/openssl /usr/local/include/openssl
+$ ln -s /usr/local/Cellar/libzip/1.1.2/lib/libzip/include/zipconf.h /usr/local/include/zipconf.h
+$ mkdir fakeroot
+$ make
+$ make install DESTDIR=~/build/fakeroot
