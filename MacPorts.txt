@@ -1,0 +1,133 @@
+使用 MacPorts 安裝與管理 Mac OS X 中的開放原始碼（Open Source）軟體
+
+安裝 MacPorts
+首先確認有安裝 Xcode 與 Command Line Developer Tools，若沒有請先安裝這兩個工具。
+如果是安裝 Xcode 4 以後的版本，在安裝完成後要先啓動一次 Xcode 以便簽署 Xcode EULA 同意書，或是執行：
+$ xcodebuild -license
+
+Command Line Developer Tools 可以從 Apple Developer 的網站下載
+https://developer.apple.com/downloads/
+
+Xcode 與 Command Line Tools 都裝好之後，接著就可以到 MacPorts 網站下載它的 pkg 安裝檔。
+http://www.macports.org/install.php
+
+在安裝完成後，建議先更新一下，以確保自己系統上的 MacPorts 是最新的：
+$ sudo port -v selfupdate
+
+若要搜尋軟體，則使用 search 加上關鍵字搜尋，這樣會從所有的軟體名稱與描述中尋找符合的軟體，例如搜尋 nodejs 則使用：
+$ port search nodejs
+
+若要查看某個軟體的資訊，可使用 info，例如查看 nodejs 的資訊則使用：
+$ port info nodejs
+
+有些軟體套件會相依於其他套件，若要查看套件的相依性關係，可以使用 deps，例如：
+$ port deps nodejs
+
+若要安裝指定的軟體套件，可使用 install，例如：
+$ sudo port install nodejs
+
+有些套件會提供一些安裝選項，讓使用者在安裝時可以依照自己的需求調整，若要查詢一個軟體套件所提供的選項，可以使用 variants，例如：
+$ port variants nmap
+
+如果要在安裝時指定一些 variant 安裝選項，則可以使用加號再加上 variant 選項名稱，例如：
+$ sudo port install nmap +zenmap
+
+而如果要將預設開啟的 variant 選項拿掉，則使用減號再加上 variant 選項名稱，例如：
+$ sudo port install nmap -zenmap
+
+在 MacPorts 安裝軟體時，會產生一些暫時性的檔案，有時候如果安裝上出了一些問題，這些檔案可能會殘存在硬碟中（例如在下載套件時出問題），如果想要把這些檔案清理乾淨，，可以使用 clean，例如：
+$ sudo port clean --all vile
+
+這裡的 --all 參數是指把所有與 vile 套件相關的檔案都清除乾淨，如果想要清理特定的檔案，可以換成其他的參數，可用的有 --work、--dist、--archive、--logs
+
+若要移除軟體套件，則使用 uninstall，例如：
+$ sudo port uninstall vile
+
+如果要連同該套件的相依性套件一起移除，則加上 ‑‑follow‑dependencies 參數，例如：
+$ sudo port uninstall --follow-dependencies vile
+
+這項就會把所有只有被 vile 需要的相依性套件都一起移除，如果一個套件是屬於 vile 的相依性套件，但同時是其他套件的相依性套件，那麼這樣的套件就會被保留下來，所以不用擔心會移除掉不該移除的軟體套件。
+
+如果在移除套件時，該套件還會被其他的套件使用到，那麼系統就會出現訊息告訴你不應該這麼做，並且取消移除的動作，如果你想要連同那些所有會影響到的套件一起移除，可以使用 --follow-dependents 參數，例如：
+$ sudo port uninstall --follow-dependents ncurses
+
+這樣就會把所有需要 ncurses 的套件都一次移除掉。如果你不想這樣做，真的只要把 ncurses 這個套件移除就好（不管套件相依性問題），也可以使用 -f 參數，例如：
+$ sudo port -f uninstall ncurses
+
+這樣就會忽略套件相依性，只移除 ncurses 套件。
+
+
+移除 MacPorts
+通常在一般的狀況下是不需要移除 MacPorts 的，而且這也是一件比較麻煩的事情，如果真的要移除 MacPorts，首先要移除所有經由 MacPorts 安裝的軟體：
+$ sudo port -fp uninstall installed
+
+接著再移除 MacPorts 本身，如果要備份設定檔，可以把 ${prefix}/etc 備份下來。
+要將 MacPorts 移除掉，就是把所有 MacPorts 所建立的檔案刪除，例如：
+$ sudo rm -rf \
+/opt/local \
+/Applications/DarwinPorts \
+/Applications/MacPorts \
+/Library/LaunchDaemons/org.macports.* \
+/Library/Receipts/DarwinPorts*.pkg \
+/Library/Receipts/MacPorts*.pkg \
+/Library/StartupItems/DarwinPortsStartup \
+/Library/Tcl/darwinports1.0 \
+/Library/Tcl/macports1.0 \
+~/.macports
+
+而這裡的路徑可能會因為每個系統而不同，請「不要」直接用複製貼上的方式執行！如果你在當初安裝時，有更改 prefix 預設的安裝路徑，就要把 /opt/local 換成當初設定的路徑，而 applications_dir（預設為 /Applications/MacPorts） 與 frameworks_dir 也是類似的狀況。
+
+若要查詢更詳盡的說明，可以參考 MacPorts Guide 網站。
+http://guide.macports.org/
+$ brew install libzip gcc
+Updating Homebrew...
+==> Auto-updated Homebrew!
+Updated 1 tap (homebrew/core).
+==> Updated Formulae
+icoutils
+
+==> Downloading https://homebrew.bintray.com/bottles/libzip-1.1.2.mavericks.bott
+######################################################################## 100.0%
+==> Pouring libzip-1.1.2.mavericks.bottle.tar.gz
+🍺  /usr/local/Cellar/libzip/1.1.2: 119 files, 466.0KB
+==> Installing dependencies for gcc: gmp, mpfr, libmpc, isl
+==> Installing gcc dependency: gmp
+==> Using the sandbox
+==> Downloading https://gmplib.org/download/gmp/gmp-6.1.2.tar.xz
+######################################################################## 100.0%
+==> ./configure --prefix=/usr/local/Cellar/gmp/6.1.2 --enable-cxx
+==> make
+==> make check
+==> make install
+🍺  /usr/local/Cellar/gmp/6.1.2: 18 files, 3.2MB, built in 7 minutes 34 seconds
+==> Installing gcc dependency: mpfr
+==> Downloading https://mirrors.ocf.berkeley.edu/debian/pool/main/m/mpfr4/mpfr4_
+######################################################################## 100.0%
+==> ./configure --prefix=/usr/local/Cellar/mpfr/3.1.5 --disable-silent-rules
+==> make
+==> make check
+==> make install
+🍺  /usr/local/Cellar/mpfr/3.1.5: 26 files, 3.6MB, built in 6 minutes 27 seconds
+==> Installing gcc dependency: libmpc
+==> Downloading https://homebrew.bintray.com/bottles/libmpc-1.0.3.mavericks.bott
+######################################################################## 100.0%
+==> Pouring libmpc-1.0.3.mavericks.bottle.tar.gz
+🍺  /usr/local/Cellar/libmpc/1.0.3: 11 files, 350.3KB
+==> Installing gcc dependency: isl
+==> Downloading http://isl.gforge.inria.fr/isl-0.18.tar.xz
+######################################################################## 100.0%
+==> ./configure --disable-silent-rules --prefix=/usr/local/Cellar/isl/0.18 --wit
+==> make check
+==> make install
+🍺  /usr/local/Cellar/isl/0.18: 80 files, 4MB, built in 3 minutes 3 seconds
+==> Installing gcc 
+==> Downloading https://ftpmirror.gnu.org/gcc/gcc-6.3.0/gcc-6.3.0.tar.bz2
+==> Downloading from http://ftp.yzu.edu.tw/gnu/gcc/gcc-6.3.0/gcc-6.3.0.tar.bz2
+######################################################################## 100.0%
+==> Downloading https://raw.githubusercontent.com/Homebrew/formula-patches/e9e0e
+######################################################################## 100.0%
+==> Patching
+==> Applying 6.1.0-jit.patch
+patching file gcc/jit/Make-lang.in
+==> ../configure --build=x86_64-apple-darwin13.4.0 --prefix=/usr/local/Cellar/gc
+==> make bootstrap
