@@ -1,0 +1,45 @@
+﻿IOS 9.X SHSH 提取
+
+=======================================
+使用 savethemblobs 提取完整 shsh
+=======================================
+下載安裝 Python 2.7 的版本
+https://www.python.org/downloads/windows/
+
+下載 requests.rar
+解壓縮後, 將 requests 目錄放到 C:\Python27\Lib\site-packages 裡面
+https://github.com/Mint-Fans/linux-package/blob/IOS/requests.rar
+
+下載 savethemblobs.zip
+解壓縮後放到 C 目錄下
+https://github.com/Mint-Fans/linux-package/blob/IOS/savethemblobs.zip
+
+打開命令提示字元
+cd \savethemblobs
+savethemblobs.py <ECID> iPhone4,1
+
+範例: savethemblobs.py 2700125700872 iPhone4,1
+
+提取完後到 C:\Users\登入帳號名稱\.shsh 裡面查看
+得到以下 shsh
+2700125700872_iPhone4,1_9.1-13B143.shsh
+
+然後檢查內容 開頭 string 2.0.0 改為 2.1.0
+保存後將shsh重新命名
+2700125700872_iPhone4,1_9.1-13B143.shsh
+改為
+2700125700872-iPhone4,1-9.1.shsh
+
+這樣就得到一個 IOS 9.X 完整可降級的 shsh
+
+
+=======================================
+愛思提取的shsh
+=======================================
+愛思提取的版本需要使用工具修改, 才能得到完整的 shsh
+
+下載 IOS 9.X shsh 修改工具
+https://github.com/Mint-Fans/linux-package/blob/IOS/ios9x-shsh-tools.zip
+
+解壓縮後打開工具, 然後把愛思版的shsh拖到工具視窗裡面
+然後桌面上就會出現修改好的 shsh
