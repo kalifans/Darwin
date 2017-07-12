@@ -29,8 +29,12 @@ cp -r $MACSDKROOT/usr/include/mach/i386 $IOSSDKROOT/usr/include/mach/
 cp -r $MACSDKROOT/usr/include/sys/_types $IOSSDKROOT/usr/include/sys/
 
 # Install openssl-1.0.2l / libpcap-1.8.1 / pcre-8.30 Libs to SDK
-
-
+wget --no-check-certificate https://github.com/kalifans/Darwin/blob/deb/libpcap-1.8.1-arm.tar
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/pcre-8.30-arm.tar
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/openssl_1.0.2l-arm.tar
+tar vxf libpcap-1.8.1-arm.tar -C $SDKROOT/
+tar vxf pcre-8.30-arm.tar -C $SDKROOT/
+tar vxf openssl_1.0.2l-arm.tar -C $SDKROOT/
 
 cd nmap-7.50
 
@@ -77,6 +81,7 @@ chmod +x libpcap/configure
 make
 mkdir pkg
 make install DESTDIR=pkg
+
 # install ncat certs
 mkdir -p pkg/usr/local/share/ncat
 cp ncat/certs/ca-bundle.crt pkg/usr/local/share/ncat/
