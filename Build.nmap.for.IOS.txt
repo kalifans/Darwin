@@ -1,40 +1,40 @@
 Build nmap 7.50 for IOS 6.1.3
 
-Xcode: 5.0.2
+Xcode: 6.1.1
 IOS SDK: 6.1
 
-export SDKROOT="$HOME/SDKs/iPhoneOS6.1.sdk"
-export CC=$(xcrun -f clang)
-export CXX=$(xcrun -f clang++)
-export LD=$(xcrun -f ld)
-export AR=$(xcrun -f ar)
-export AS=$(xcrun -f as)
-export NM=$(xcrun -f nm)
-export RANLIB=$(xcrun -f ranlib)
+IOSDEVROOT=$(xcrun --sdk iphoneos --show-sdk-platform-path)/Developer
+IOSSDKROOT=$(xcrun --sdk iphoneos6.1 --show-sdk-path)
+export SDKROOT=$IOSSDKROOT
+export CC="$(xcrun -f clang)"
+export CXX="$(xcrun -f clang++)"
+export LD=$DEVROOT/usr/bin/ld
+export AR=$DEVROOT/usr/bin/ar
+export AS=$DEVROOT/usr/bin/as
+export NM=$DEVROOT/usr/bin/nm
+export RANLIB=$DEVROOT/usr/bin/ranlib
 export CFLAGS="-I$SDKROOT/usr/include/ -arch armv7 -g -O2 -isysroot $SDKROOT -miphoneos-version-min=6.1"
 export LDFLAGS="-L$SDKROOT/usr/lib/ -arch armv7"
 export CPPFLAGS=$CFLAGS
 export CXXFLAGS=$CFLAGS
 
-# xcode iOS sdk link
+# iOS sdk include link
 MACSDKROOT=$(xcrun --sdk macosx --show-sdk-path)
-ln -s $MACSDKROOT/usr/include/net/if_arp.h $IOSSDKROOT/usr/include/net/if_arp.h
-ln -s $MACSDKROOT/usr/include/net/bpf.h $IOSSDKROOT/usr/include/net/bpf.h
-ln -s $MACSDKROOT/usr/include/netinet/ip_icmp.h $IOSSDKROOT/usr/include/netinet/ip_icmp.h
-ln -s $MACSDKROOT/usr/include/i386 $IOSSDKROOT/usr/include/i386
-ln -s $MACSDKROOT/usr/include/openssl $IOSSDKROOT/usr/include/openssl
-ln -s $MACSDKROOT/usr/include/sys/_types $IOSSDKROOT/usr/include/sys/_types
-ln -s $MACSDKROOT/usr/include/libkern/i386 $IOSSDKROOT/usr/include/libkern/i386
-ln -s $MACSDKROOT/usr/include/mach/i386 $IOSSDKROOT/usr/include/mach/i386
+cp $MACSDKROOT/usr/include/net/if_arp.h $IOSSDKROOT/usr/include/net/
+cp $MACSDKROOT/usr/include/net/bpf.h $IOSSDKROOT/usr/include/net/
+cp $MACSDKROOT/usr/include/netinet/ip_icmp.h $IOSSDKROOT/usr/include/netinet/
+cp -r $MACSDKROOT/usr/include/i386 $IOSSDKROOT/usr/include/
+cp -r $MACSDKROOT/usr/include/libkern/i386 $IOSSDKROOT/usr/include/libkern/i386
+cp -r $MACSDKROOT/usr/include/mach/i386 $IOSSDKROOT/usr/include/mach/
+cp -r $MACSDKROOT/usr/include/sys/_types $IOSSDKROOT/usr/include/sys/
+
+# Install openssl-1.0.2l / libpcap-1.8.1 / pcre-8.30 Libs to SDK
+
+
 
 cd nmap-7.50
 
-# Patch:
-# debian patch
-# sed -e 's/-llua5.3/-llua5.3 -llua5.3-lpeg/g' configure.ac > configure.ac2
-# mv configure.ac2 configure.ac
-
-# iOS armv7 patch
+######### iOS armv7 patch #########
 sed -e 's/ppc64/armv7/g' configure > configure2
 mv configure2 configure
 chmod +x ./configure
@@ -45,9 +45,34 @@ mv libpcap/configure.in2 libpcap/configure.in
 sed -e 's/-arch x86_64 -arch i386/-arch armv7/g' libpcap/configure > libpcap/configure2
 mv libpcap/configure2 libpcap/configure
 chmod +x libpcap/configure
+###################################
 
-# configure
-./configure --host=i386-apple-darwin --target=armv7-apple-darwin --build=armv7-apple-darwin --with-libdnet=included --with-libpcap=included --with-libpcre=included --with-liblua=included --with-pcap=bpf
+# configure for x86_64
+./configure --prefix=/usr/local \
+--with-libpcre=included \
+--with-liblua=included \
+--with-openssl=/usr/local \
+--without-nmap-update --disable-universal --without-zenmap
+
+# configure for armv7 v1
+./configure --host=i386-apple-darwin --target=armv7-apple-darwin --build=armv7-apple-darwin \
+--prefix=/usr/local \
+--with-libpcap=$SDKROOT/usr/lib/ \
+--with-libpcre=$SDKROOT/usr/lib/ \
+--with-openssl=included \
+--with-liblua=included \
+--without-nmap-update --disable-universal --without-zenmap --without-ndiff
+
+# configure for armv7 v2
+./configure --host=i386-apple-darwin --target=armv7-apple-darwin --build=armv7-apple-darwin \
+--prefix=/usr/local \
+--with-libpcap=included \
+--with-libpcre=included \
+--with-liblua=included \
+--with-libdnet=included \
+--with-openssl=included \
+--with-pcap=bpf \
+--without-nmap-update --disable-universal --without-zenmap --without-ndiff
 
 make
 mkdir pkg
@@ -69,9 +94,9 @@ Section: Networking
 Installed-Size: 25900
 Maintainer: Jay Freeman (saurik) <saurik@saurik.com>
 Architecture: iphoneos-arm
-Version: 7.50-1
+Version: 7.50-2
 Pre-Depends: dpkg (>= 1.14.25-8)
-Depends: libpcap, openssl, pcre
+Depends: libpcap (>= 1.8.0), openssl (>= 1.0.0), pcre
 Description: analyze and scan remote network hosts
 Name: Nmap
 EOF
