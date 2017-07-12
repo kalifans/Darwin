@@ -36,6 +36,8 @@ tar vxf libpcap-1.8.1-arm.tar -C $SDKROOT/
 tar vxf pcre-8.30-arm.tar -C $SDKROOT/
 tar vxf openssl_1.0.2l-arm.tar -C $SDKROOT/
 
+wget https://nmap.org/dist/nmap-7.50.tar.bz2
+tar jxvf nmap-7.50.tar.bz2
 cd nmap-7.50
 
 ######### iOS armv7 patch #########
