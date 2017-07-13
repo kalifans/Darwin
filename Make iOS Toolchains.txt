@@ -1,16 +1,9 @@
 # Make iOS Toolchains
 mkdir -p $HOME/Developer/CommandLineTools/IOSDEVROOT
-mkdir -p $HOME/Developer/CommandLineTools/Platforms/iPhoneOS.platform
-mkdir -p $HOME/Developer/CommandLineTools/Platforms/MacOSX.platform
-cd $HOME/Developer/CommandLineTools/Platforms/iPhoneOS.platform
-ln -s ../../../SDKs SDK
-cd $HOME/Developer/CommandLineTools/Platforms/MacOSX.platform
-ln -s ../../../SDKs SDK
 
-cd ~
 cp -r /Volumes/Xcode/Xcode.app/Contents/Developer/usr $HOME/Developer/CommandLineTools/
 cp -r /Volumes/Xcode/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr $HOME/Developer/CommandLineTools/
-cp -r /Volumes/Xcode/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr $HOME/Developer/CommandLineTools/Platforms/iPhoneOS.platform
+cp -r /Volumes/Xcode/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr $HOME/Developer/CommandLineTools/IOSDEVROOT/
 
 cd $HOME/Developer/CommandLineTools
 ln -s ../SDKs SDKs
