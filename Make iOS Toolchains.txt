@@ -9,8 +9,8 @@ cd $HOME/Developer/CommandLineTools
 ln -s ../SDKs SDKs
 
 # backup
-cd ../../
-tar Jcvf iOS-Toolchains.tar.xz Developer
+cd $HOME
+tar Jcvf Developer.tar.xz Developer
 
 # Switch iOS Toolchains
 sudo xcode-select --switch $HOME/Developer/CommandLineTools
