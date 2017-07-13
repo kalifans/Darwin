@@ -17,7 +17,7 @@ done
 SDK="iPhoneOS8.1.sdk"
 SDK="MacOSX10.11.sdk"
 cd $HOME/Developer/SDKs
-tar Jcvf /Volumes/DATA/SDKs/"$SDK".tar.xz "$SDK"/
+tar Jcvf /Volumes/APP/SDKs/"$SDK".tar.xz "$SDK"/
 
 解壓縮 SDKs
 mkdir -p $HOME/Developer/SDKs
@@ -26,7 +26,7 @@ cd $HOME/Developer/SDKs
 SDK="iPhoneOS6.1.sdk"
 SDK="MacOSX10.8.sdk"
 
-tar Jxvf /Volumes/DATA/SDKs/"$SDK".tar.xz
+tar Jxvf /Volumes/APP/SDKs/"$SDK".tar.xz
 
 export SDK PATH
 SDKROOT="$HOME/Developer/SDKs/iPhoneOS6.1.sdk"
