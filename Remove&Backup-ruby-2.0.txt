@@ -1,0 +1,139 @@
+
+###############################################
+### Backup ruby 2.0 (2.0.0p481)
+###############################################
+PKGDIR="$HOME/ruby_2.0.0"
+
+mkdir -p $PKGDIR/usr/bin
+mkdir -p $PKGDIR/usr/lib
+mkdir -p $PKGDIR/System/Library/Frameworks
+mkdir -p $PKGDIR/usr/share/man/man1
+mkdir -p $PKGDIR/DEBIAN
+
+cp /usr/bin/ruby $PKGDIR/usr/bin/
+cp /usr/bin/erb $PKGDIR/usr/bin/
+cp /usr/bin/gem $PKGDIR/usr/bin/
+cp /usr/bin/irb $PKGDIR/usr/bin/
+cp /usr/bin/rake $PKGDIR/usr/bin/
+cp /usr/bin/rdoc $PKGDIR/usr/bin/
+cp /usr/bin/ri $PKGDIR/usr/bin/
+cp /usr/bin/testrb $PKGDIR/usr/bin/
+
+cp /usr/lib/libruby.2.0.0.dylib $PKGDIR/usr/lib/
+
+cp -r /System/Library/Frameworks/Ruby.framework $PKGDIR/System/Library/Frameworks/
+
+cp /usr/share/man/man1/erb.1 $PKGDIR/usr/share/man/man1/
+cp /usr/share/man/man1/irb.1 $PKGDIR/usr/share/man/man1/
+cp /usr/share/man/man1/ri.1 $PKGDIR/usr/share/man/man1/
+cp /usr/share/man/man1/ruby.1 $PKGDIR/usr/share/man/man1/
+cp /usr/share/man/man1/gem.1 $PKGDIR/usr/share/man/man1/
+cp /usr/share/man/man1/rake.1 $PKGDIR/usr/share/man/man1/
+
+cd $PKGDIR/usr/share/
+ln -s ../../System/Library/Frameworks/Ruby.framework/Versions/Current/usr/share/ri ri
+cd $PKGDIR/usr/lib/
+ln -s ../../System/Library/Frameworks/Ruby.framework/Versions/Current/usr/lib/ruby ruby
+ln -s libruby.2.0.0.dylib libruby.2.0.dylib
+ln -s libruby.2.0.0.dylib libruby.dylib
+
+cd $PKGDIR/System/Library/Frameworks/Ruby.framework/Versions/Current/usr/lib
+rm libruby.2.0.dylib
+rm libruby.dylib
+ln -s libruby.2.0.0.dylib libruby.2.0.dylib
+ln -s libruby.2.0.0.dylib libruby.dylib
+
+cd $PKGDIR/System/Library/Frameworks/Ruby.framework/Versions
+rm -r Current
+rm ../Ruby
+rm -r ../Resources
+ln -s 2.0 Current
+
+cd ..
+ln -s Versions/2.0/Ruby Ruby
+ln -s Versions/2.0/Resources Resources
+
+cd $PKGDIR
+
+cat << EOF > DEBIAN/control
+Package: ruby
+Version: 2.0.0p481
+Architecture: darwin-amd64
+Maintainer: Antonio Terceiro <terceiro@debian.org>
+Installed-Size: 71839
+Section: ruby
+Priority: optional
+Multi-Arch: allowed
+Homepage: http://www.ruby-lang.org/
+Description: Interpreter of object-oriented scripting language Ruby
+ Ruby is the interpreted scripting language for quick and easy
+ object-oriented programming.  It has many features to process text
+ files and to do system management tasks (as in perl).  It is simple,
+ straight-forward, and extensible.
+ .
+ In the name of this package, '2.0' indicates the Ruby library compatibility
+ version. This package currently provides the '2.0.x' branch of Ruby.
+EOF
+
+cd ..
+
+# Clean .DS_Store
+DS=$(/usr/bin/find * | /usr/bin/grep '.DS_Store')
+for i in $DS; do
+    /bin/rm "$i"
+done
+
+dpkg-deb --build --uniform-compression -Zgzip ruby_2.0.0 ruby_2.0.0p481_darwin-amd64.deb
+
+###############################################
+### Remove ruby 2.0 (2.0.0p481)
+###############################################
+rm -rf /usr/bin/ruby
+rm -rf /usr/bin/erb
+rm -rf /usr/bin/gem
+rm -rf /usr/bin/irb
+rm -rf /usr/bin/rake
+rm -rf /usr/bin/rdoc
+rm -rf /usr/bin/ri
+rm -rf /usr/bin/testrb
+
+rm -rf /usr/bin/bundle
+rm -rf /usr/bin/bundler
+rm -rf /usr/bin/bundle_ruby
+
+rm -rf /usr/lib/libruby.2.0.0.dylib
+rm -rf /usr/lib/libruby.2.0.dylib
+rm -rf /usr/lib/libruby.dylib
+rm -rf /usr/lib/ruby
+
+rm -rf /System/Library/Frameworks/Ruby.framework
+
+rm -rf /usr/share/man/man1/erb.1
+rm -rf /usr/share/man/man1/irb.1
+rm -rf /usr/share/man/man1/ri.1
+rm -rf /usr/share/man/man1/ruby.1
+rm -rf /usr/share/man/man1/gem.1
+rm -rf /usr/share/man/man1/rake.1
+
+rm -rf /usr/share/ri
+
+###############################################
+### Remove RubyCocoa
+###############################################
+rm -rf /System/Library/Frameworks/RubyCocoa.framework
+rm -rf /Library/Ruby
+
+###############################################
+### Install RubyCocoa for ruby 2.0
+###############################################
+download
+https://rubycocoa.github.io/
+
+###############################################
+### Remove RubyCocoa for ruby 2.0
+###############################################
+rm -rf /Developer/Documentation/RubyCocoa
+rm -rf /Developer/Examples/RubyCocoa
+rm -rf /Library/Frameworks/RubyCocoa.framework
+rm -rf /Library/Ruby
+
