@@ -1,0 +1,45 @@
+Build openssl for IOS
+
+CommandLineTools + SDK
+
+Configure:
+enable-ec_nistp_64_gcc_128 darwin64-x86_64-cc 選項只能用於 64-bit (x86_64 arm64)
+
+DEVROOT="$HOME/Developer/CommandLineTools/IOSDEVROOT"
+IOSSDKROOT=$(xcrun --sdk iphoneos6.1 --show-sdk-path)
+export SDKROOT=$IOSSDKROOT
+export CC="$(xcrun -f gcc) -arch armv7"
+export CXX="$(xcrun -f g++) -arch armv7"
+export LD=$DEVROOT/usr/bin/ld
+export AR=$DEVROOT/usr/bin/ar
+export AS=$DEVROOT/usr/bin/as
+export NM=$DEVROOT/usr/bin/nm
+export RANLIB=$DEVROOT/usr/bin/ranlib
+export CFLAGS="-I$SDKROOT/usr/include/ -arch armv7"
+export LDFLAGS="-L$SDKROOT/usr/lib/ -arch armv7"
+export CPPFLAGS=$CFLAGS
+export CXXFLAGS=$CFLAGS
+
+# iOS sdk include link
+MACSDKROOT=$(xcrun --sdk macosx --show-sdk-path)
+cp $MACSDKROOT/usr/include/assert.h $IOSSDKROOT/usr/include/
+
+# 1.0.2
+wget --no-check-certificate https://www.openssl.org/source/openssl-1.0.2l.tar.gz
+tar zxvf openssl-1.0.2l.tar.gz
+cd openssl-1.0.2l
+./Configure --prefix=/usr/local/openssl/1.0.2 --openssldir=/usr/local/openssl/1.0.2/etc/openssl iphoneos-cross no-ssl2 zlib-dynamic shared enable-ms
+
+# 1.1.0
+wget --no-check-certificate https://www.openssl.org/source/openssl-1.1.0f.tar.gz
+tar zxvf openssl-1.1.0f.tar.gz
+cd openssl-1.1.0f
+./Configure --prefix=/usr/local/openssl/1.1.0 --openssldir=/usr/local/openssl/1.1.0/etc/openssl iphoneos-cross no-ssl3 no-ssl3-method no-zlib
+
+# Patch:
+sed -e 's/$(CROSS_TOP)\/SDKs\/$(CROSS_SDK)/$(SDKROOT)/g' Makefile > Makefile2
+mv Makefile2 Makefile
+
+make depend
+make
+sudo make install_sw

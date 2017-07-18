@@ -1,0 +1,87 @@
+DEVROOT="$HOME/Developer/CommandLineTools/IOSDEVROOT"
+IOSSDKROOT=$(xcrun --sdk iphoneos6.1 --show-sdk-path)
+export SDKROOT=$IOSSDKROOT
+export CC="$(xcrun -f gcc) -arch armv7"
+export CXX="$(xcrun -f g++) -arch armv7"
+export LD=$DEVROOT/usr/bin/ld
+export AR=$DEVROOT/usr/bin/ar
+export AS=$DEVROOT/usr/bin/as
+export NM=$DEVROOT/usr/bin/nm
+export RANLIB=$DEVROOT/usr/bin/ranlib
+export CFLAGS="-I$SDKROOT/usr/include/ -arch armv7"
+export LDFLAGS="-L$SDKROOT/usr/lib/ -arch armv7"
+export CPPFLAGS=$CFLAGS
+export CXXFLAGS=$CFLAGS
+
+# iOS sdk include copy
+MACSDKROOT=$(xcrun --sdk macosx --show-sdk-path)
+cp -r $MACSDKROOT/usr/include/net $IOSSDKROOT/usr/include/
+cp -r $MACSDKROOT/usr/include/netinet $IOSSDKROOT/usr/include/
+cp -r $MACSDKROOT/usr/include/sys/_types $IOSSDKROOT/usr/include/sys/
+
+cp -r $MACSDKROOT/usr/include/i386 $IOSSDKROOT/usr/include/
+cp -r $MACSDKROOT/usr/include/libkern/i386 $IOSSDKROOT/usr/include/libkern/i386
+cp -r $MACSDKROOT/usr/include/mach/i386 $IOSSDKROOT/usr/include/mach/
+
+# Install openssl-1.0.2l Libs to SDK
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/openssl_1.0.2l-arm.tar
+tar vxf openssl_1.0.2l-arm.tar -C $SDKROOT/
+
+wget --no-check-certificate https://nmap.org/dist/nmap-7.50.tar.bz2
+tar jxvf nmap-7.50.tar.bz2
+cd nmap-7.50
+
+######### iOS armv7 patch #########
+sed -i "" 's/ppc64/armv7/g' configure
+sed -i "" 's/-arch x86_64 -arch i386/-arch armv7/g' libpcap/configure.in
+sed -i "" 's/-arch x86_64 -arch i386/-arch armv7/g' libpcap/configure
+
+# configure for armv7
+./configure --host=arm-apple-darwin --target=armv7-apple-darwin --build=armv7-apple-darwin \
+--prefix=/usr/local \
+--with-libpcap=included \
+--with-liblua=included \
+--with-openssl=/usr/local/openssl/1.0.2 \
+--with-pcap=bpf \
+--without-nmap-update --disable-universal --without-zenmap --without-ndiff
+
+手動修改: (非必要)
+* libdnet-stripped/config.status
+刪除 ${LIBOBJDIR}memcmp$U.o
+
+* libdnet-stripped/Makefile
+刪除 ${LIBOBJDIR}memcmp$U.o
+
+* libpcap/config.h
+刪除 #define LBL_ALIGN 1
+或改為 /* #undef LBL_ALIGN */
+
+make
+make install DESTDIR=nmap_7.50_iphoneos-arm
+
+# Make deb
+cat << EOF > DEBIAN/control
+Package: nmap
+Version: 7.50
+Architecture: iphoneos-arm
+Maintainer: Debian Security Tools Packaging Team <pkg-security-team@lists.alioth.debian.org>
+Installed-Size: 27235
+Depends: libpcap, openssl-1.0
+Section: net
+Priority: extra
+Homepage: http://nmap.org/
+Description: The Network Mapper
+ Nmap is a utility for network exploration or security auditing. It
+ supports ping scanning (determine which hosts are up), many port
+ scanning techniques, version detection (determine service protocols
+ and application versions listening behind ports), and TCP/IP
+ fingerprinting (remote host OS or device identification). Nmap also
+ offers flexible target and port specification, decoy/stealth scanning,
+ sunRPC scanning, and more. Most Unix and Windows platforms are
+ supported in both GUI and commandline modes. Several popular handheld
+ devices are also supported, including the Sharp Zaurus and the iPAQ.
+EOF
+
+cd ..
+dpkg-deb --build --uniform-compression -Zgzip nmap_7.50_iphoneos-arm nmap_7.50_iphoneos-arm.deb
+
