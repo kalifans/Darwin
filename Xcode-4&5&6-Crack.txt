@@ -17,8 +17,6 @@ Xcode 4/5/6 Crack
 
 ==================================================
 2. 修改Xcode配置修改
-Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/SDKSettings.plist
-
 終端機輸入:
 SDKROOT=$(/usr/bin/xcrun --sdk iphoneos --show-sdk-path)
 /usr/bin/open $SDKROOT
