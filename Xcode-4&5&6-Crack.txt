@@ -20,9 +20,8 @@ Xcode 4/5/6 Crack
 Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk/SDKSettings.plist
 
 終端機輸入:
-XCODE_BASE=$(/usr/bin/xcrun -f otest | sed s/"\/Tools\/otest"//g)
-PATH="$XCODE_BASE"/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS*.sdk/
-/usr/bin/open $PATH
+SDKROOT=$(/usr/bin/xcrun --sdk iphoneos --show-sdk-path)
+/usr/bin/open $SDKROOT
 
 修改 SDKSettings.plist
 <key>CODE_SIGNING_REQUIRED</key>
@@ -32,9 +31,8 @@ PATH="$XCODE_BASE"/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS*.sdk/
 <string>NO</string>
 
 終端機輸入:
-XCODE_BASE=$(/usr/bin/xcrun -f otest | /usr/bin/sed s/"\/Tools\/otest"//g)
-PATH="$XCODE_BASE"/Platforms/iPhoneOS.platform
-/usr/bin/open $PATH
+DEVROOT=$(/usr/bin/xcrun --sdk iphoneos --show-sdk-platform-path)
+/usr/bin/open $DEVROOT
 
 修改 Info.plist
 DefaultProperties -> CODE_SIGN_CONTEXT_CLASS
@@ -46,9 +44,9 @@ XCiPhoneOSCodeSignContext 改成 XCCodeSignContext
 
 *** Binary Patch for xcode 4.1/4.2 ***
 只用於 4.1 / 4.2 版
-$ XCODE_BASE=$(/usr/bin/xcrun -f otest | sed s/"\/Tools\/otest"//g)
-$ PATH="$XCODE_BASE"/Platforms/iPhoneOS.platform/Developer/Library/Xcode/PrivatePlugIns/iPhoneOS\ Build\ System\ Support.xcplugin/Contents/MacOS
-$ cd $PATH
+$ DEVROOT=$(/usr/bin/xcrun --sdk iphoneos --show-sdk-platform-path)
+$ IBSS="$DEVROOT/Developer/Library/Xcode/PrivatePlugIns/iPhoneOS\ Build\ System\ Support.xcplugin/Contents/MacOS
+$ cd $IBSS
 $ dd if=iPhoneOS\ Build\ System\ Support of=working bs=500 count=255
 $ printf "xc3x26x00x00" >> working
 $ mv -n iPhoneOS\ Build\ System\ Support iPhoneOS\ Build\ System\ Support.orig
@@ -85,8 +83,8 @@ Targets -> Build Phases
 
 輸入以下腳本
 DEV_NAME="iPhone Developer"
-XCODE_BASE=$(/usr/bin/xcrun -f otest | sed s/"\/Tools\/otest"//g)
-export CODESIGN_ALLOCATE=$XCODE_BASE/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate
+DEVROOT=$(/usr/bin/xcrun --sdk iphoneos --show-sdk-platform-path)
+export CODESIGN_ALLOCATE=$DEVROOT/Developer/usr/bin/codesign_allocate
 if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "ipados" ]; then
     $XCODE_BASE/iphoneentitlements/gen_entitlements.py "my.company.${PROJECT_NAME}" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent";
     codesign -f -s "$DEV_NAME" --entitlements "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/";
