@@ -43,7 +43,7 @@ XCiPhoneOSCodeSignContext 改成 XCCodeSignContext
 *** Binary Patch for xcode 4.1/4.2 ***
 只用於 4.1 / 4.2 版
 $ DEVROOT=$(/usr/bin/xcrun --sdk iphoneos --show-sdk-platform-path)
-$ IBSS="$DEVROOT/Developer/Library/Xcode/PrivatePlugIns/iPhoneOS\ Build\ System\ Support.xcplugin/Contents/MacOS
+$ IBSS="$DEVROOT/Developer/Library/Xcode/PrivatePlugIns/iPhoneOS\ Build\ System\ Support.xcplugin/Contents/MacOS"
 $ cd $IBSS
 $ dd if=iPhoneOS\ Build\ System\ Support of=working bs=500 count=255
 $ printf "xc3x26x00x00" >> working
