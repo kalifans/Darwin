@@ -3,6 +3,11 @@ GDB 使用 ios arm 版
 然後安裝 GNU Debugger、adv-cmds、openssh。
 ssh 登入到 IOS，執行 IOS 內的終端機指令。
 
+或登入SSH使用命令安裝:
+# echo "deb http://cydia.radare.org/ ./" >> /etc/apt/sources.list.d/cydia.list
+# apt-get update
+# apt-get install adv-cmds gdb
+
 =============================
 除錯方式
 =============================
