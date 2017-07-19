@@ -45,17 +45,6 @@ sed -i "" 's/-arch x86_64 -arch i386/-arch armv7/g' libpcap/configure
 --with-pcap=bpf \
 --without-nmap-update --disable-universal --without-zenmap --without-ndiff
 
-手動修改: (非必要)
-* libdnet-stripped/config.status
-刪除 ${LIBOBJDIR}memcmp$U.o
-
-* libdnet-stripped/Makefile
-刪除 ${LIBOBJDIR}memcmp$U.o
-
-* libpcap/config.h
-刪除 #define LBL_ALIGN 1
-或改為 /* #undef LBL_ALIGN */
-
 make
 make install DESTDIR=nmap_7.50_iphoneos-arm
 
