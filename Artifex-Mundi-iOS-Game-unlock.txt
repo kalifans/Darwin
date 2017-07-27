@@ -1,0 +1,53 @@
+Artifex Mundi iOS Game unlock
+
+* 建立目錄
+mkdir -p ipa-tmp
+
+* 解壓縮 ipa
+cd ipa-tmp
+unzip APPNAME.ipa
+
+* 進入 Payload/***.app 目錄
+cd Payload/***.app
+
+* 修改 info.plist
+sed -i "" 's/.free/.full/g' Info.plist
+
+* 修改 game.json
+sed -i "" s/Freemium/Full/g game.json
+sed -i "" /SPARKPROMO_CLIENT_ID/d game.json
+sed -i "" 's/IAP_UNLOCK_CE/IAP_UNLOCK_CE_KEY/g' game.json
+sed -i "" 's/com.artifexmundi.*/1af54fd820f655e1b035fe1e725910c3a7f89f1c"/g' game.json
+
+* 手動修改 game.json
+
+,
+,
+改為
+,
+
+將 xpromo-iphone.XXX.free.json 或 xpromo-ipad.XXX.free.json
+裡面的參數
+	"AM_CROSS_PROMO_GAME_ID": "XXXX",
+	"app_id": "iphone.XXX.full",
+
+複製到 game.json 裡面 "SALES_MODEL":"Full", 參數上面
+
+例如:
+	"AM_CROSS_PROMO_GAME_ID": "4710",
+	"app_id": "iphone.pi3.full",
+	"SALES_MODEL":"Full",
+    "ShowPAC": "1",
+
+關閉 Finder
+
+* 清除 .DS_Store
+DS=$(/usr/bin/find * | /usr/bin/grep '.DS_Store')
+for i in $DS; do
+    /bin/rm "$i"
+done
+
+* 打包 ipa
+cd ipa-tmp
+zip -r ../APPNAME.ipa *
+
