@@ -10,9 +10,6 @@ unzip APPNAME.ipa
 * 進入 Payload/***.app 目錄
 cd Payload/***.app
 
-* 修改 info.plist
-sed -i "" 's/.free/.full/g' Info.plist
-
 * 修改 game.json
 sed -i "" s/Freemium/Full/g game.json
 sed -i "" /SPARKPROMO_CLIENT_ID/d game.json
