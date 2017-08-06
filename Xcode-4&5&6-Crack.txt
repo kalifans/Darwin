@@ -83,6 +83,7 @@ Targets -> Build Phases
 DEV_NAME="iPhone Developer"
 DEVROOT=$(/usr/bin/xcrun --sdk iphoneos --show-sdk-platform-path)
 export CODESIGN_ALLOCATE=$DEVROOT/Developer/usr/bin/codesign_allocate
+XCODE_BASE=$(/usr/bin/xcrun -f otest | sed s/"\/Tools\/otest"//g)
 if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "ipados" ]; then
     $XCODE_BASE/iphoneentitlements/gen_entitlements.py "my.company.${PROJECT_NAME}" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent";
     codesign -f -s "$DEV_NAME" --entitlements "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${PROJECT_NAME}.xcent" "${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/";
