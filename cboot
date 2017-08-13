@@ -1,0 +1,111 @@
+#!/bin/bash
+
+
+
+uninst_fun(){
+clear
+echo -e ""
+echo -e "****************************"
+echo -e "   卸載第二系統"
+echo -e "****************************"
+echo -e ""
+echo -e "   確定要移除第二系統?[y/n]"
+echo -e ""
+read ISOK
+[[ "$ISOK" ]]
+if [ "$ISOK" == "y" ]; then
+    coolbootercli -u
+else
+    exit
+fi
+
+}
+
+inst_fun(){
+clear
+echo -e ""
+echo -e "****************************"
+echo -e "   選擇iOS版本"
+echo -e "****************************"
+echo -e ""
+echo -e "   例如輸入 7.1.2"
+echo -e ""
+read VER
+[[ "$VER" ]]
+if [ "$VER" == "" ]; then
+   exit
+fi
+
+echo -e ""
+echo -e "****************************"
+echo -e "   分配第二系統容量"
+echo -e "****************************"
+echo -e ""
+echo -e "   以GB為單位"
+echo -e "   例如要分配給第二系統8GB的空間"
+echo -e "   就輸入 8"
+echo -e ""
+read SIZE
+[[ "$SIZE" ]]
+if [ "$SIZE" == "" ]; then
+   exit
+fi
+
+clear
+echo -e ""
+echo -e "****************************"
+echo -e "   安裝資訊"
+echo -e "****************************"
+echo -e ""
+echo -e "   安裝版本: $VER"
+echo -e "   分配空間: $SIZE GB"
+echo -e ""
+echo -e "   確定要繼續安裝?[y/n]"
+echo -e ""
+read ISOK
+[[ "$ISOK" ]]
+if [ "$ISOK" == "y" ]; then
+    coolbootercli "$VER" --datasize "$SIZE"GB
+else
+    exit
+fi
+
+}
+
+main_fun(){
+clear
+echo -e ""
+echo -e "****************************"
+echo -e "   CoolBoot"
+echo -e "****************************"
+echo -e ""
+echo -e "   1) 安裝第二系統"
+echo -e ""
+echo -e "   2) 啟動第二系統"
+echo -e ""
+echo -e "   3) 卸載第二系統"
+echo -e ""
+read OPT
+[[ "$OPT" ]]
+if [ "$OPT" == "1" ]; then
+    inst_fun
+elif [ "$OPT" == "2" ]; then
+    coolbootercli -b
+elif [ "$OPT" == "3" ]; then
+    uninst_fun
+fi
+}
+
+if [ "$UID" == "0" ]; then
+    main_fun
+else
+    /usr/bin/clear
+    echo -e ""
+    echo -e "****************************"
+    echo -e "   require root permissions "
+    echo -e "****************************"
+    echo -e ""
+    su
+    exit
+fi
+
