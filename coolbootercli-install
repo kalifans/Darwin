@@ -1,0 +1,7 @@
+echo "deb https://coolbooter.com/ ./" >> /etc/apt/sources.list.d/cydia.list
+apt-get update
+apt-get install com.coolbooter.coolbootercli
+or
+wget https://coolbooter.com/com.coolbooter.coolbootercli_0.6.3-release_iphoneos-arm.deb
+dpkg -i com.coolbooter.coolbootercli_0.6.3-release_iphoneos-arm.deb
+apt-get install -f
