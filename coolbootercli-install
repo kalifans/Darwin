@@ -5,3 +5,9 @@ or
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/coolbootercli_0.6.3-release_iphoneos-arm.deb
 dpkg -i coolbootercli_0.6.3-release_iphoneos-arm.deb
 apt-get install -f
+
+cboot
+wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/cboot
+mv cboot /usr/bin/
+chown 0:0 /usr/bin/cboot
+chmod 755 /usr/bin/cboot
