@@ -6,7 +6,7 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 brew update
 brew install libimobiledevice
 brew cask install osxfuse
-brew install homebrew/fuse/fuse
+brew install ifuse
 
 OS X 10.9 Install libimobiledevice:
 update to Xcode 6.1.1 or later
