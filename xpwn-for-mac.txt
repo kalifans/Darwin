@@ -18,7 +18,7 @@ $ git clone https://github.com/planetbeing/xpwn.git
 $ mkdir build
 $ cd build
 $ cmake ~/xpwn
-$ ln -s /usr/local/Cellar/openssl/1.0.2k/include/openssl /usr/local/include/openssl
+$ ln -s /usr/local/Cellar/openssl/1.0.2l/include/openssl /usr/local/include/openssl
 $ ln -s /usr/local/Cellar/libzip/1.1.2/lib/libzip/include/zipconf.h /usr/local/include/zipconf.h
 $ mkdir fakeroot
 $ make
