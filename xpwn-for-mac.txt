@@ -1,25 +1,83 @@
-====================
-xpwn
-====================
-依賴函式庫
-zlib openssl bzip2 libusb libpng 1.2.50
-$ sudo apt-get install libssl-dev zlib1g-dev libbz2-dev libusb-dev libpng12-dev
+xpwn for make
 
-Mac
-https://homebrew.bintray.com/bottles/libpng@1.2-1.2.54.el_capitan.bottle.tar.gz
-https://homebrew.bintray.com/bottles/libpng@1.2-1.2.54.yosemite.bottle.tar.gz
-https://homebrew.bintray.com/bottles/libpng@1.2-1.2.54.mavericks.bottle.tar.gz
+安裝 openssl
+* makedepend
+wget https://www.x.org/archive/individual/util/makedepend-1.0.5.tar.gz
+tar zxvf makedepend-1.0.5.tar.gz
+cd makedepend-1.0.5
+./configure
+make
 
-安裝cmake
-$ sudo apt-get install cmake
+* openssl 1.0.2
+wget https://www.openssl.org/source/openssl-1.0.2l.tar.gz
+tar zxvf openssl-1.0.2l.tar.gz
+cd openssl-1.0.2l
+perl ./Configure --prefix=/usr/local --openssldir=/etc/openssl no-ssl2 zlib-dynamic shared enable-cms enable-ec_nistp_64_gcc_128 darwin64-x86_64-cc
+make depend
+make
+make install DESTDIR=openssl-1.0.2l
 
-編譯並製作套件
-$ git clone https://github.com/planetbeing/xpwn.git
-$ mkdir build
-$ cd build
-$ cmake ~/xpwn
-$ ln -s /usr/local/Cellar/openssl/1.0.2l/include/openssl /usr/local/include/openssl
-$ ln -s /usr/local/Cellar/libzip/1.1.2/lib/libzip/include/zipconf.h /usr/local/include/zipconf.h
-$ mkdir fakeroot
-$ make
-$ make install DESTDIR=~/build/fakeroot
+安裝 libz (可選)
+git clone https://github.com/madler/zlib
+cd zlib
+./configure
+make
+sudo make install
+cd ..
+
+安裝 bzip2
+wget http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz
+tar zxvf bzip2-1.0.6.tar.gz
+cd bzip2-1.0.6
+make
+sudo make install
+cd ..
+
+安裝 libusb-1.0
+wget http://cdn-fastly.deb.debian.org/debian/pool/main/libu/libusb-1.0/libusb-1.0_1.0.21.orig.tar.bz2
+tar jxvf libusb-1.0_1.0.21.orig.tar.bz2
+cd libusb-1.0.21
+./configure
+make
+sudo make install
+cd ..
+
+安裝 libpng
+wget http://http.debian.net/debian/pool/main/libp/libpng1.6/libpng1.6_1.6.28.orig.tar.xz
+tar Jxvf libpng1.6_1.6.28.orig.tar.xz
+cd libpng-1.6.28
+./configure
+make
+sudo make install
+cd ..
+
+安裝 cmake
+wget https://cmake.org/files/v3.9/cmake-3.9.1.tar.gz
+tar zxvf cmake-3.9.1.tar.gz
+cd cmake-3.9.1
+./bootstrap --prefix=/usr/local --no-system-libs --parallel=2 --datadir=/share/cmake --docdir=/share/doc/cmake --mandir=/share/man --system-zlib --system-bzip2 --system-curl
+make
+sudo make install
+cd ..
+
+編譯 xpwn
+git clone https://github.com/planetbeing/xpwn.git
+
+cd xpwn/minizip
+ALLC="ioapi.c mztools.c unzip.c zip.c"
+clang -c $ALLC
+ALLO="ioapi.o mztools.o unzip.o zip.o"
+libtool -static $ALLO -o libminizip.a
+rm *.o
+cd ../ipsw-patch
+CFLAGS="-I$HOME/xpwn/includes -I$HOME/xpwn/minizip"
+gcc -c $CFLAGS outputstate.c -o outputstate.c.o
+cd ../../
+
+mkdir build && cd build
+
+cmake ~/xpwn
+cp ../xpwn/ipsw-patch/outputstate.c.o ipsw-patch/CMakeFiles/xpwn.dir/
+make
+or
+make package
