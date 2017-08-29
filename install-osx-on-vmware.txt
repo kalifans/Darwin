@@ -1,5 +1,8 @@
 Install MAC OS X on VMware
 
+VMware foe Apple OS X Patch
+https://github.com/DrDonk/unlocker
+
 ====================================
 安裝系統
 ====================================
