@@ -1,0 +1,60 @@
+Install MAC OS X on VMware
+
+====================================
+安裝系統
+====================================
+1.新建虛擬機，記得刪除軟碟機，(舊版VMware 選擇 FreeBSD 64bit)
+
+2.修改安裝的虛擬機目錄中的.vmx文件
+* 10.6 以前的版本
+找到 guestOS 這一行，修改為 guestOS = "darwin10"
+有時候會出現進入安裝介面滑鼠和鍵盤都不能用，試試修改一下配置
+-----------------------
+guestOS = "darwin10"
+ich7m.present = "TRUE"
+smc.present = "FALSE"
+keyboard.enable = "TRUE"
+mouse.vusb.enable = "TRUE"
+monitor.virtual_exec = "hardware"
+monitor.virtual_mmu = "software"
+-----------------------
+
+* 10.7 以後的版本
+最後一行添加
+-----------------------
+smc.version = "0"
+-----------------------
+
+Haswell 處理器
+-----------------------
+smc.version = "0"
+cpuid.1.eax = "00000000000000110000011010101001"
+cpuid.1.edx = "10111111111010111111101111111111"
+-----------------------
+
+註: 10.6 以前的版本如無法使用EFI引導，虛擬機啟動方式則改為BIOS引導，下載 darwin_snow_legacy.iso 或者變色龍進行引導。
+光碟機掛載 darwin_snow_legacy.iso，啟動虛擬機，出現引導界面時，點擊虛擬機右下角光碟機圖示，更換Mac映像檔，記得勾選 connected，然後按F5刷新，就會出現Mac引導選項。
+
+
+====================================
+VMware Tools
+====================================
+【Edit virtual machine settings】
+選擇分頁頁籤【Options】
+選到選項【Shared Folders】
+更改預設選項 Disabled 為 【Always enabled】
+勾選【Map as a network drive in Windows guests】
+點選下方【Add…】>【Next >】
+來到 Name the shared Folder 頁面，Host path 選擇要與VMWare系統共享的本地資料夾路徑 (可點選【Browse…】指向)。
+勾選【Enable this share】>【Finish】
+【ok】儲存設定。
+
+====================================
+﻿VMware 分割磁碟合併
+====================================
+Windows:
+cd C:\Program Files (x86)\VMware\VMware Workstation
+vmware-vdiskmanager.exe -r H:\VMS\OSX-EXT\data.vmdk -t 0 H:\VMS\data.vmdk
+
+Linux:
+$ vmware-vdiskmanager -r OSX1075.vmdk -t 0 OSX1075.vmdk
