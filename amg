@@ -31,3 +31,5 @@ for i in $DIR_PATH; do
 done
 
 echo "Artifex Mundi Game unlocked!"
+
+exit 0
