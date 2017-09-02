@@ -17,7 +17,7 @@ for i in $DIR_PATH; do
     sed -i 's/Freemium/Full/g' game.json
     sed -i 's/IAP_UNLOCK_CE"/IAP_UNLOCK_CE_KEY"/g' game.json
     sed -i 's/"com.artifexmundi.*/"1af54fd820f655e1b035fe1e725910c3a7f89f1c"/g' game.json
-    sed -i 's/.free/.full/g' game.json
+    sed -i 's/.free"/.full"/g' game.json
 
     XPROMOS=$(ls | grep 'free.json')
     for i in $XPROMOS; do
