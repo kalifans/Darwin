@@ -61,4 +61,24 @@ chown 0:0 /usr/bin/amg
 chmod 755 /usr/bin/amg
 
 設定開機時自動執行破解腳本
+iOS 6
 echo "bsexec .. /usr/bin/amg" >> /private/etc/launchd.conf
+
+iOS 7+
+cat << EOF > /Library/LaunchDaemons/com.artifexmundi.unlock.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>ProgramArguments</key>
+        <array>
+                <string>/usr/bin/amg</string>
+        </array>
+        <key>RunAtLoad</key>
+        <true/>
+        <key>Label</key>
+        <string>com.artifexmundi.unlock</string>
+</dict>
+</plist>
+EOF
+
