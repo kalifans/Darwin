@@ -61,4 +61,4 @@ chown 0:0 /usr/bin/amg
 chmod 755 /usr/bin/amg
 
 設定開機時自動執行破解腳本
-echo "/usr/bin/amg" >> /private/etc/launchd.conf
+echo "bsexec .. /usr/bin/amg" >> /private/etc/launchd.conf
