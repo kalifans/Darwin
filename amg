@@ -31,6 +31,7 @@ for i in $DIR_PATH; do
 done
 
 # Clean Artifexmundi Game Preferences
+cd /var/mobile/
 PREF=$(find * | grep '.aplunified.free.plist')
 for i in $PREF; do
     rm /var/mobile/"$i"
