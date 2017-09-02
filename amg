@@ -1,0 +1,25 @@
+#!/bin/bash
+
+####################################
+### Artifex Mundi iOS Game unlock
+####################################
+cd /var/mobile/
+
+DIR_PATH=$(find * | grep 'game.json' | sed 's/game.json//g')
+for i in $DIR_PATH; do
+    cd /var/mobile/"$i"
+    XPROMO=$(ls | grep 'free.json')
+    GAMEID=$(cat $XPROMO | grep 'AM_CROSS_PROMO_GAME_ID' | head -1)
+    CHECK_GID=$(cat game.json | grep 'AM_CROSS_PROMO_GAME_ID')
+    if [ "$CHECK_GID" == "" ]; then
+        sed -i "/SALES_MODEL/ a $GAMEID" game.json
+    fi
+    sed -i 's/Freemium/Full/g' game.json
+    sed -i 's/IAP_UNLOCK_CE"/IAP_UNLOCK_CE_KEY"/g' game.json
+    sed -i 's/"com.artifexmundi.*/"1af54fd820f655e1b035fe1e725910c3a7f89f1c"/g' game.json
+    sed -i 's/.free/.full/g' game.json
+    sed -i 's/Freemium/Full/g' $XPROMO
+    sed -i 's/.free"/.full"/g' $XPROMO
+done
+
+echo "Artifex Mundi Game unlocked!"
