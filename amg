@@ -30,6 +30,12 @@ for i in $DIR_PATH; do
     done
 done
 
+# Clean Artifexmundi Game Preferences
+PREF=$(find * | grep '.aplunified.free.plist')
+for i in $PREF; do
+    rm /var/mobile/"$i"
+done
+
 echo "Artifex Mundi Game unlocked!"
 
 exit 0
