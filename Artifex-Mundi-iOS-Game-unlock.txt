@@ -1,5 +1,8 @@
 Artifex Mundi iOS Game unlock
 
+===============================
+手動修改
+===============================
 * 建立目錄
 mkdir -p ipa-tmp
 
@@ -48,3 +51,14 @@ done
 cd ipa-tmp
 zip -r ../APPNAME.ipa *
 
+===============================
+自動破解腳本
+===============================
+安裝到iOS
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/amg
+mv amg /usr/bin/
+chown 0:0 /usr/bin/amg
+chmod 755 /usr/bin/amg
+
+設定開機時自動執行破解腳本
+echo "/usr/bin/amg" >> /private/etc/launchd.conf
