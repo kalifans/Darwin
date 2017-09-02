@@ -79,12 +79,16 @@ echo -e "****************************"
 echo -e "   CoolBoot"
 echo -e "****************************"
 echo -e ""
-echo -e "   1) 安裝第二系統"
-echo -e ""
-echo -e "   2) 啟動第二系統"
-echo -e ""
-echo -e "   3) 卸載第二系統"
-echo -e ""
+DSCGECK=$(ls /dev/ | grep rdisk0s1s3)
+if [ "$DSCGECK" == "" ]; then
+    echo -e "   1) 安裝第二系統"
+    echo -e ""
+else
+    echo -e "   2) 啟動第二系統"
+    echo -e ""
+    echo -e "   3) 卸載第二系統"
+    echo -e ""
+fi
 read OPT
 [[ "$OPT" ]]
 if [ "$OPT" == "1" ]; then
