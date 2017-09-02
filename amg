@@ -10,9 +10,13 @@ for i in $DIR_PATH; do
     cd /var/mobile/"$i"
     XPROMO=$(ls | grep 'free.json' | head -1)
     GAMEID=$(cat $XPROMO | grep 'AM_CROSS_PROMO_GAME_ID' | head -1)
+    CHECK_MODE=$(cat game.json | grep 'SALES_MODEL')
+    if [ "$CHECK_MODE" == "" ]; then
+        sed -i '/ShowPAC/ i "SALES_MODEL":"Full",' game.json
+    fi
     CHECK_GID=$(cat game.json | grep 'AM_CROSS_PROMO_GAME_ID')
     if [ "$CHECK_GID" == "" ]; then
-        sed -i "/SALES_MODEL/ a $GAMEID" game.json
+        sed -i "/ShowPAC/ i $GAMEID" game.json
     fi
     sed -i 's/Freemium/Full/g' game.json
     sed -i 's/IAP_UNLOCK_CE"/IAP_UNLOCK_CE_KEY"/g' game.json
