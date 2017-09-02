@@ -1,0 +1,7 @@
+cd /tmp
+wget http://apt.ripbigboss.com/repofiles/cydia/debs2.0/cydiastore_org.thebigboss.applanguageswitcher_v1.1-2.deb
+or
+wget http://apt.thebigboss.org/repofiles/cydia/debs2.0/cydiastore_org.thebigboss.applanguageswitcher_v1.1-6.deb
+
+dpkg -i cydiastore_org.thebigboss.applanguageswitcher_*.deb
+apt-get install
