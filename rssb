@@ -1,0 +1,31 @@
+#!/bin/bash
+
+
+# Restart SpringBoard
+/usr/bin/killall -SIGSTOP cfprefsd
+
+rm -rf /private/var/mobile/Library/Preferences/com.apple.springboard.plist
+
+cat << EOF > /private/var/mobile/Library/Preferences/com.apple.springboard.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SBShowNonDefaultSystemApps</key>
+	<true/>
+	<key>ring-vibrate</key>
+	<false/>
+	<key>SBShowBatteryPercentage</key>
+	<true/>
+</dict>
+</plist>
+EOF
+
+/bin/chmod 600 /private/var/mobile/Library/Preferences/com.apple.springboard.plist
+/bin/chown 501:501 /private/var/mobile/Library/Preferences/com.apple.springboard.plist
+
+/usr/bin/killall -9 cfprefsd
+/bin/su mobile -c uicache
+/usr/bin/killall backboardd
+
+exit 0
