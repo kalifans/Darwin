@@ -1,0 +1,77 @@
+# Appsync Unified
+echo "deb http://cydia.angelxwind.net/ ./" >> /etc/apt/sources.list.d/cydia.list
+apt-get install net.angelxwind.appsyncunified
+
+# GDB
+echo "deb http://cydia.radare.org/ ./" >> /etc/apt/sources.list.d/cydia.list
+apt-get update
+apt-get install adv-cmds gdb
+
+# Terminal
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/iosterminal_1.0.2-3_ios6.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/iosterminal_1.0.2-3_ios7.deb
+
+# iFile
+wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/eu.heinelt.ifile_2.2.0-1_iphoneos-arm_ios6.deb
+wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/eu.heinelt.ifile_2.2.0-1_iphoneos-arm_julioverne.deb
+
+# Base
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/shell-utils_1.0_all.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/shell-utils_1.0_se.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/openssl-1.0_1.0.2l_iphoneos-arm.deb
+
+# NET Tools
+wget --no-check-certificate https://github.com/kalifans/Darwin/blob/deb/network-cmds_443-1_iphoneos-arm.deb
+
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/libnet_1.1.6_iphoneos-arm.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/ettercap_0.8.2_iphoneos-arm.deb
+
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/libxml2_2.7.1_iphoneos-arm.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/libxslt_1.1.29_iphoneos-arm.deb
+
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/netcat_1.10_iphoneos-arm.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/nmap_7.50_iphoneos-arm.deb
+
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/yaml-0.1.7_iphoneos-arm.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/ruby_2.4.1_iphoneos-arm.deb
+
+
+# Languages Witcher
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/applanguageswitcher_v1.1-2.deb
+
+# CoolBooter
+echo "deb https://coolbooter.com/ ./" >> /etc/apt/sources.list.d/cydia.list
+apt-get update
+apt-get install com.coolbooter.coolbootercli
+
+# cboot
+wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/cboot
+mv cboot /usr/bin/
+chown 0:0 /usr/bin/cboot
+chmod 755 /usr/bin/cboot
+
+
+# Artifex Mundi iOS Game unlock
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/amg
+mv amg /usr/bin/
+chown 0:0 /usr/bin/amg
+chmod 755 /usr/bin/amg
+# iOS6
+echo "bsexec .. /usr/bin/amg" >> /private/etc/launchd.conf
+# iOS7
+cat << EOF > /Library/LaunchDaemons/com.artifexmundi.unlock.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>ProgramArguments</key>
+        <array>
+                <string>/usr/bin/amg</string>
+        </array>
+        <key>RunAtLoad</key>
+        <true/>
+        <key>Label</key>
+        <string>com.artifexmundi.unlock</string>
+</dict>
+</plist>
+EOF
