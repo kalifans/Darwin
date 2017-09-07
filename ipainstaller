@@ -1,0 +1,32 @@
+IPA Installer
+
+cmd:
+apt-get install com.autopear.installipa
+gui:
+apt-get install com.slugrail.ipainstaller
+
+ipainstaller <選項> /var/mobile/Media/Downloads/xxxx.ipa
+
+* 選項
+backup:
+-b <指定 Identifier> 應用程式備份為IPA。
+-B <指定 Identifier> 應用程式備份為IPA，包含設定檔。
+-o 指定 IPA 備份輸出路徑，否則IPA將保存在 /var/mobile/Documents/ 目錄下。
+
+install:
+-c 執行乾淨安裝，現有設定檔將被清除。這將自動實現 -n 選項。
+-d 安裝後刪除IPA文件。
+-f 強制安裝，不檢查功能和系統版本。
+-r 安裝後刪除 iTunesMetadata.plist。
+
+-n 不要恢復保存的設定檔。<備份回復選項>
+-q 安靜模式，禁止所有正常輸出。
+-Q 靜止模式，禁止所有輸出，包括錯誤。
+
+info:
+-l 列出所有示已安裝的 App Store 應用程式 Identifier 。
+-i <指定 Identifier> 顯示已安裝應用程式訊息。
+
+remove:
+-u 指定 Identifier 卸載應用程式。
+
