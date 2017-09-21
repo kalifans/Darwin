@@ -4,6 +4,15 @@ echo "cydia-lproj hold" | dpkg --set-selections
 echo "uikittools hold" | dpkg --set-selections
 echo "com.saurik.patcyh hold" | dpkg --set-selections
 
+更新
+apt-get update
+apt-get upgrade
+
+# 清除垃圾
+apt-get autoremove
+apt-get autoclean
+apt-get clean all
+
 # patcyh fix iOS 8.4.1
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/patcyhfix-8.4.1.tar
 tar xvf patcyhfix-8.4.1.tar -C /
