@@ -5,6 +5,7 @@ tar xvf patcyhfix-8.4.1.tar -C /
 # Appsync Unified iOS 8.4.1
 echo "deb http://cydia.angelxwind.net/ ./" >> /etc/apt/sources.list.d/cydia.list
 apt-get install net.angelxwind.appsyncunified
+apt-get install coreutils
 
 # Apple File Conduit "2" iOS 8.4.1
 wget http://apt.saurik.com/cydia/debs/com.saurik.afc2d_1.2_iphoneos-arm.deb
