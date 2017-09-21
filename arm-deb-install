@@ -1,3 +1,7 @@
+# patcyh fix iOS 8.4.1
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/patcyhfix-8.4.1.tar
+tar xvf patcyhfix-8.4.1.tar -C /
+
 # Appsync Unified iOS 8.4.1
 echo "deb http://cydia.angelxwind.net/ ./" >> /etc/apt/sources.list.d/cydia.list
 apt-get install net.angelxwind.appsyncunified
