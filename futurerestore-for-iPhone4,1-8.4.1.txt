@@ -47,6 +47,20 @@ $ mv precious.plist iPhone4,1-8.4.1.shsh
 工具: futurerestore
 http://api.tihmstar.net/builds/futurerestore/futurerestore-latest.zip
 
+進入 pwned DFU 模式
+ssh 連接 iOS
+$ ssh root@idev_ip
+
+下載 Kloader
+# cd /
+# wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/kloader.tar
+# tar xvf kloader.tar
+
+進入 pwned DFU
+# /dfu
+跑完後黑屏，按一下 Home 鍵，進入 pwned DFU 模式
+
+
 Mac:
 關閉 iTunes
 $ killall iTunesHelper
