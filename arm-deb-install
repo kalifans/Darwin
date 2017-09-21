@@ -1,3 +1,9 @@
+# 禁止Cydia與Uikit Tools套件升級
+echo "cydia hold" | dpkg --set-selections
+echo "cydia-lproj hold" | dpkg --set-selections
+echo "uikittools hold" | dpkg --set-selections
+echo "com.saurik.patcyh hold" | dpkg --set-selections
+
 # patcyh fix iOS 8.4.1
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/patcyhfix-8.4.1.tar
 tar xvf patcyhfix-8.4.1.tar -C /
