@@ -10,6 +10,9 @@ apt-get install coreutils
 # Apple File Conduit "2" iOS 8.4.1
 wget http://apt.saurik.com/cydia/debs/com.saurik.afc2d_1.2_iphoneos-arm.deb
 dpkg -i com.saurik.afc2d_1.2_iphoneos-arm.deb
+or
+apt-get install com.saurik.afc2d
+
 
 # GDB
 echo "deb http://cydia.radare.org/ ./" >> /etc/apt/sources.list.d/cydia.list
