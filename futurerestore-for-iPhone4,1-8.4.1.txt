@@ -1,0 +1,64 @@
+﻿iPhone 4S 使用 futurerestore 刷機流程
+
+範例: 8.4.1
+
+* 提取 iOS 8.4.1 shsh
+工具: odysseus 0.999
+http://dayt0n.github.io/odysseus/odysseus-0.999.zip
+
+下載 8.4.1 原版 Firmware
+http://appldnld.apple.com/ios8.4.1/031-31129-20150812-751A3CB8-3C8F-11E5-A8A5-A91A3A53DB92/iPhone4,1_8.4.1_12H321_Restore.ipsw
+
+自製 Firmware
+$ ./ipsw iPhone4,1_8.4.1_12H321_Restore.ipsw custom.ipsw -memory
+
+提取 pwnediBEC
+$ ./xpwntool `unzip -j custom.ipsw 'Firmware/dfu/iBEC*' | awk '/inflating/{print $2}'` pwnediBEC
+
+上傳 pwnediBEC 與 kloader 到 iOS
+$ scp pwnediBEC kloader root@idev_ip:/
+
+ssh 連接 iOS
+$ ssh root@idev_ip
+
+進入 pwned 回復模式
+# cd /
+# /kloader pwnediBEC
+跑完後黑屏，按一下 Home 鍵，進入 pwned 回復模式
+
+提取 blobs
+手機連接電腦
+$ ./irecovery -s
+> /send ../payload
+> go blobs
+> /exit
+$ ./irecovery -g precious.dump
+$ ./irecovery -s
+> reboot
+
+解壓縮 blob
+$ ./ticket precious.dump precious.plist iPhone4,1_8.4.1_12H321_Restore.ipsw -z
+$ ./validate precious.plist iPhone4,1_8.4.1_12H321_Restore.ipsw -z
+$ mv precious.plist iPhone4,1-8.4.1.shsh
+
+
+* 使用 futurerestore 刷機
+不限版本、只要越獄, 準備原版 Firmware 與 iOS 8.4.1 shsh。
+工具: futurerestore
+http://api.tihmstar.net/builds/futurerestore/futurerestore-latest.zip
+
+Mac:
+關閉 iTunes
+$ killall iTunesHelper
+
+刷機
+$ ./futurerestore_macos --use-pwndfu -t iPhone4,1-8.4.1.shsh --latest-baseband iPhone4,1_8.4.1_12H321_Restore.ipsw
+
+Linux:
+debian / Kali 安裝依賴
+$ sudo sh -c "echo 'deb http://ftp.us.debian.org/debian jessie main contrib non-free' >> /etc/apt/sources.list.d/debian-package-repositories.list"
+$ sudo apt-get update
+$ sudo apt-get install libssl1.0.0 libc6 libzip4 zlib1g libcurl3 libusb-1.0-0 libpng12-0 libstdc++6 libgcc1 libudev1
+
+刷機
+$ ./futurerestore_linux --use-pwndfu -t iPhone4,1-8.4.1.shsh --latest-baseband iPhone4,1_8.4.1_12H321_Restore.ipsw
