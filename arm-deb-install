@@ -1,3 +1,6 @@
+# tihmstar Cydia 源
+echo "deb http://repo.tihmstar.net/ ./" >> /etc/apt/sources.list.d/net.tihmstar.list
+
 # 禁止Cydia與Uikit Tools套件升級
 echo "cydia hold" | dpkg --set-selections
 echo "cydia-lproj hold" | dpkg --set-selections
