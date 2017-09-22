@@ -23,14 +23,9 @@ tar xvf patcyhfix-8.4.1.tar -C /
 # Appsync Unified iOS 8.4.1
 echo "deb http://cydia.angelxwind.net/ ./" >> /etc/apt/sources.list.d/cydia.list
 apt-get install net.angelxwind.appsyncunified
-apt-get install coreutils
 
 # Apple File Conduit "2" iOS 8.4.1
-wget http://apt.saurik.com/cydia/debs/com.saurik.afc2d_1.2_iphoneos-arm.deb
-dpkg -i com.saurik.afc2d_1.2_iphoneos-arm.deb
-or
 apt-get install com.saurik.afc2d
-
 
 # GDB
 echo "deb http://cydia.radare.org/ ./" >> /etc/apt/sources.list.d/cydia.list
@@ -41,22 +36,20 @@ apt-get install adv-cmds gdb
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/iosterminal_1.0.2-3_ios6.deb
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/iosterminal_1.0.2-3_ios7.deb
 # iOS 8/9
-wget http://apt.thebigboss.org/repofiles/cydia/debs2.0/mterminal_1.4-5.deb
+apt-get install com.officialscheduler.mterminal
 
-# iFile
+# iFile iOS 6
 wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/eu.heinelt.ifile_2.2.0-1_iphoneos-arm_ios6.deb
+# iFile iOS 7+
 wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/eu.heinelt.ifile_2.2.0-1_iphoneos-arm_julioverne.deb
 
 # Base
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/shell-utils_1.0_all.deb
+apt-get install coreutils
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/shell-utils_1.0_se.deb
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/openssl-1.0_1.0.2l_iphoneos-arm.deb
 
 # NET Tools
 wget --no-check-certificate https://github.com/kalifans/Darwin/blob/deb/network-cmds_443-1_iphoneos-arm.deb
-
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/libnet_1.1.6_iphoneos-arm.deb
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/ettercap_0.8.2_iphoneos-arm.deb
 
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/libxml2_2.7.1_iphoneos-arm.deb
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/libxslt_1.1.29_iphoneos-arm.deb
@@ -67,6 +60,8 @@ wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/nmap_7.50
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/yaml-0.1.7_iphoneos-arm.deb
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/ruby_2.4.1_iphoneos-arm.deb
 
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/libnet_1.1.6_iphoneos-arm.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/ettercap_0.8.2_iphoneos-arm.deb
 
 # Languages Witcher iOS 6/7
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/applanguageswitcher_v1.1-2.deb
