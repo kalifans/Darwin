@@ -16,10 +16,6 @@ apt-get autoremove
 apt-get autoclean
 apt-get clean all
 
-# patcyh fix iOS 8.4.1
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/patcyhfix-8.4.1.tar
-tar xvf patcyhfix-8.4.1.tar -C /
-
 # Appsync Unified iOS 8.4.1
 echo "deb http://cydia.angelxwind.net/ ./" >> /etc/apt/sources.list.d/net.angelxwind.list
 apt-get install net.angelxwind.appsyncunified
