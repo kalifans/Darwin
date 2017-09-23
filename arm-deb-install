@@ -21,14 +21,14 @@ wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/patcyhfix
 tar xvf patcyhfix-8.4.1.tar -C /
 
 # Appsync Unified iOS 8.4.1
-echo "deb http://cydia.angelxwind.net/ ./" >> /etc/apt/sources.list.d/cydia.list
+echo "deb http://cydia.angelxwind.net/ ./" >> /etc/apt/sources.list.d/net.angelxwind.list
 apt-get install net.angelxwind.appsyncunified
 
 # Apple File Conduit "2" iOS 8.4.1
 apt-get install com.saurik.afc2d
 
 # GDB
-echo "deb http://cydia.radare.org/ ./" >> /etc/apt/sources.list.d/cydia.list
+echo "deb http://cydia.radare.org/ ./" >> /etc/apt/sources.list.d/org.radare.list
 apt-get update
 apt-get install adv-cmds gdb
 
