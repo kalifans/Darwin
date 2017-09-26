@@ -10,7 +10,6 @@ rm .*
 rm -rf .git
 rm -r .git
 rm -r .github
-# rm -r .tools
 
 PW="0000"
 cat << EOF > config/database.yml
@@ -82,4 +81,18 @@ rm vendor/ruby/2.4.0/gems/pg-0.20.0/ext/*.o
 rm vendor/ruby/2.4.0/gems/pg_array_parser-0.0.9/ext/pg_array_parser/*.o
 rm vendor/ruby/2.4.0/gems/redcarpet-3.4.0/ext/redcarpet/*.o
 rm vendor/ruby/2.4.0/gems/sqlite3-1.3.13/ext/sqlite3/*.o
+
+# TEST
+MSFROOT=$HOME/metasploit
+GEMFILE=$MSFROOT/Gemfile
+echo "export BUNDLE_GEMFILE=$GEMFILE"
+echo "export MSF_DATABASE_CONFIG=$MSFROOT/config/database.yml"
+echo "export GEM_PATH=$MSFROOT/vendor/ruby/2.4.0"
+cd $HOME/metasploit
+
+建立資料庫
+createuser msf -P -h localhost
+createdb -O msf msf -h localhost
+
+./msfconsole
 
