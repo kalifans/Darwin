@@ -1,0 +1,185 @@
+MSF ARM bundle Build for iOS
+
+cd $HOME/metasploit
+
+cp -r vendor/ruby/2.4.0/extensions/x86_64-darwin-13 vendor/ruby/2.4.0/extensions/armv7-darwin
+
+# extensions
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/bcrypt-3.1.11/bcrypt_ext.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/bcrypt_pbkdf-1.0.0/bcrypt_pbkdf_ext.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/ffi-1.9.18/ffi_c.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/json-2.1.0/json/ext/generator.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/json-2.1.0/json/ext/parser.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/msgpack-1.1.0/msgpack/msgpack.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/network_interface-0.0.2/network_interface_ext.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/nokogiri-1.8.1/nokogiri/nokogiri.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/pcaprub-0.12.4/pcaprub_c.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/pg-0.20.0/pg_ext.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/pg_array_parser-0.0.9/pg_array_parser/pg_array_parser.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/redcarpet-3.4.0/redcarpet.bundle
+rm vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/sqlite3-1.3.13/sqlite3/sqlite3_native.bundle
+
+# xcode 切換為自制 iOS Toolchains
+sudo /usr/bin/xcode-select --switch $HOME/Developer/CommandLineTools
+# iOS Toolchains 製作方法
+https://github.com/kalifans/Darwin/blob/mis/Make%20iOS%20Toolchains.txt
+
+Lib 替換為 ARM 版
+mv /opt /opt64
+mv /opt-arm /opt
+
+export GEM_ARCH="armv7-darwin"
+DEVROOT="$HOME/Developer/CommandLineTools/IOSDEVROOT"
+IOSSDKROOT=$(xcrun --sdk iphoneos6.1 --show-sdk-path)
+export SDKROOT=$IOSSDKROOT
+export CC="$(xcrun -f clang) -arch armv7"
+export CXX="$(xcrun -f clang++) -arch armv7"
+export LD=$DEVROOT/usr/bin/ld
+export AR=$DEVROOT/usr/bin/ar
+export AS=$DEVROOT/usr/bin/as
+export NM=$DEVROOT/usr/bin/nm
+export RANLIB=$DEVROOT/usr/bin/ranlib
+export CFLAGS="-I$SDKROOT/usr/include/ -I$HOME/EXT/usr/include/ -I/opt/include/ -isysroot $SDKROOT -g -O3 -Wall -Werror-implicit"
+export LDFLAGS="-L$SDKROOT/usr/lib/ -L$HOME/EXT/usr/lib/ -L/opt/lib/"
+export CPPFLAGS=$CFLAGS
+export CXXFLAGS=$CFLAGS
+
+# bcrypt-3.1.11
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/bcrypt-3.1.11/ext/mri/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+
+Makefile 內 -I/opt/local/usr/include 改為 -I$HOME/EXT/usr/
+Makefile 內 /opt/local/lib 改為 /Users/kali/EXT/usr/lib
+
+make
+rm *.o
+mv bcrypt_ext.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/bcrypt-3.1.11/
+
+# bcrypt_pbkdf-1.0.0
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/bcrypt_pbkdf-1.0.0/ext/mri/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv bcrypt_pbkdf_ext.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/bcrypt_pbkdf-1.0.0/
+
+
+# ffi-1.9.18
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/ffi-1.9.18/ext/ffi_c/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+sed -i "" 's/-host=/-host=arm-apple-darwin/g' Makefile
+rm -r libffi
+wget http://http.debian.net/debian/pool/main/libf/libffi/libffi_3.2.1.orig.tar.gz
+tar zxvf libffi_3.2.1.orig.tar.gz
+mv libffi-3.2.1 libffi
+make
+rm *.o
+mv ffi_c.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/ffi-1.9.18/
+
+# json-2.1.0
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/json-2.1.0/ext/json/ext/generator/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv generator.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/json-2.1.0/json/ext/
+
+cd ../parser
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv parser.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/json-2.1.0/json/ext/
+
+# msgpack-1.1.0
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/msgpack-1.1.0/ext/msgpack/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv msgpack.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/msgpack-1.1.0/msgpack/
+
+# network_interface-0.0.2
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/network_interface-0.0.2/ext/network_interface_ext/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv network_interface_ext.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/network_interface-0.0.2/
+
+# nokogiri-1.8.1
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/nokogiri-1.8.1/ext/nokogiri/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv nokogiri.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/nokogiri-1.8.1/nokogiri/
+
+# pcaprub-0.12.4
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/pcaprub-0.12.4/ext/pcaprub_c
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv pcaprub_c.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/pcaprub-0.12.4/
+
+# pg-0.20.0
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/pg-0.20.0/ext/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv pg_ext.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/pg-0.20.0/
+
+# pg_array_parser-0.0.9
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/pg_array_parser-0.0.9/ext/pg_array_parser/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv pg_array_parser.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/pg_array_parser-0.0.9/pg_array_parser/
+
+# redcarpet-3.4.0
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/redcarpet-3.4.0/ext/redcarpet/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv redcarpet.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/redcarpet-3.4.0/
+
+# sqlite3-1.3.13
+cd $HOME/metasploit/vendor/ruby/2.4.0/gems/sqlite3-1.3.13/ext/sqlite3/
+sed -i "" 's/x86_64-darwin13/$(GEM_ARCH)/g' Makefile
+sed -i "" '/AR =/d' Makefile
+sed -i "" '/CC =/d' Makefile
+sed -i "" '/CXX =/d' Makefile
+make
+rm *.o
+mv sqlite3_native.bundle $HOME/metasploit/vendor/ruby/2.4.0/extensions/armv7-darwin/2.4.0/sqlite3-1.3.13/sqlite3/
+
