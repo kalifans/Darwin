@@ -1,11 +1,7 @@
 # tihmstar Cydia 源
 echo "deb http://repo.tihmstar.net/ ./" >> /etc/apt/sources.list.d/net.tihmstar.list
-
-# 禁止Cydia與Uikit Tools套件升級
-echo "cydia hold" | dpkg --set-selections
-echo "cydia-lproj hold" | dpkg --set-selections
-echo "uikittools hold" | dpkg --set-selections
-echo "com.saurik.patcyh hold" | dpkg --set-selections
+# angelxwind Cydia 源
+echo "deb http://cydia.angelxwind.net/ ./" >> /etc/apt/sources.list.d/net.angelxwind.list
 
 更新
 apt-get update
@@ -17,7 +13,6 @@ apt-get autoclean
 apt-get clean all
 
 # Appsync Unified iOS 8.4.1
-echo "deb http://cydia.angelxwind.net/ ./" >> /etc/apt/sources.list.d/net.angelxwind.list
 apt-get install net.angelxwind.appsyncunified
 
 # Apple File Conduit "2" iOS 8.4.1
