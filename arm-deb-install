@@ -49,7 +49,7 @@ wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/netcat_1.
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/nmap_7.50_iphoneos-arm.deb
 
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/yaml-0.1.7_iphoneos-arm.deb
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/ruby_2.4.1_iphoneos-arm.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/ruby_2.4.2_iphoneos-arm.deb
 
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/libnet_1.1.6_iphoneos-arm.deb
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/ettercap_0.8.2_iphoneos-arm.deb
