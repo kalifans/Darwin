@@ -1,6 +1,9 @@
 echo "deb https://coolbooter.com/ ./" >> /etc/apt/sources.list.d/com.coolbooter.list
 apt-get update
+指令界面
 apt-get install com.coolbooter.coolbootercli
+圖形應用
+apt-get install com.coolbooter.coolbooter
 
 cboot
 wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/cboot
