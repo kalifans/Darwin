@@ -12,4 +12,4 @@ chown 0:0 /usr/bin/cboot
 chmod 755 /usr/bin/cboot
 
 Local IPSW DIR
-/var/coolbooter/
+/var/cbooter/
