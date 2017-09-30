@@ -39,6 +39,9 @@ apt-get install coreutils
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/shell-utils_1.0_se.deb
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/openssl-1.0_1.0.2l_iphoneos-arm.deb
 
+# System & Network Utils
+apt-get install bind stunnel inetutils gawk adv-cmds diskdev-cmds dns2tcp file file-cmds findutils ngrep rpl rlwrap rsync sgrep tcpdump top whois
+
 # NET Tools
 wget --no-check-certificate https://github.com/kalifans/Darwin/blob/deb/network-cmds_443-1_iphoneos-arm.deb
 
