@@ -1,0 +1,82 @@
+Building the XNU kernel on Mac OS X Sierra (10.12.X)
+
+First of all, make sure you got Xcode 8, try to have the last version to encrease the chance it will build without too many errors. Next up you need to make sure you have build tools from command line, you can check this by running clang -v. If the output is something like zsh: command not found: clang then you need to install the command line tools. If you followed my instructions and got Xcode 8, this can be easily installed with the command xcode-select --install.
+
+Next up is to ensure the SDK is correctly set. A good way to check if your SDK path is set correctly is to run xcrun -sdk macosx -show-sdk-path and check the output.
+
+By the way, if you strugle with this, kernel compiling might be dangerous for your data, since this can break your OS install. At least, test it in a virtual machine.
+
+curl -O https://opensource.apple.com/tarballs/dtrace/dtrace-209.50.12.tar.gz
+curl -O https://opensource.apple.com/tarballs/AvailabilityVersions/AvailabilityVersions-26.50.4.tar.gz
+curl -O https://opensource.apple.com/tarballs/libdispatch/libdispatch-703.50.37.tar.gz
+curl -O https://opensource.apple.com/tarballs/libplatform/libplatform-126.50.8.tar.gz
+
+# To use the XNU package do
+curl -O https://opensource.apple.com/tarballs/xnu/xnu-3789.51.2.tar.gz
+export XNUPATH=$(pwd)/xnu-3789.51.2
+
+# (Note that using github is experimental, if you break anything, it's not my fault.)
+# To use github do
+git clone https://github.com/opensource-apple/xnu.git  
+export XNUPATH=$(pwd)/xnu
+
+# extract the tar files
+tar zxvf dtrace-*.tar.gz
+tar zxvf AvailabilityVersions-*.tar.gz
+tar zxvf libdispatch-*.tar.gz
+tar zxvf libplatform-*.tar.gz
+tar zxvf xnu/xnu-*.tar.gz
+
+# dtrace
+cd dtrace-*
+mkdir -p obj sym dst
+xcodebuild install -target ctfconvert -target ctfdump -target ctfmerge ARCHS="x86_64" SRCROOT=$PWD OBJROOT=$PWD/obj SYMROOT=$PWD/sym DSTROOT=$PWD/dst
+sudo ditto $PWD/dst/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
+
+# AvailabilityVersions
+cd ../AvailabilityVersions-*
+mkdir -p dst
+make install SRCROOT=$PWD DSTROOT=$PWD/dst
+sudo ditto $PWD/dst/usr/local `xcrun -sdk macosx -show-sdk-path`/usr/local
+
+# XNU - Header install
+cd $XNUPATH
+mkdir -p BUILD.hdrs/obj BUILD.hdrs/sym BUILD.hdrs/dst
+make installhdrs SDKROOT=macosx ARCH_CONFIGS=X86_64 SRCROOT=$PWD OBJROOT=$PWD/BUILD.hdrs/obj SYMROOT=$PWD/BUILD.hdrs/sym DSTROOT=$PWD/BUILD.hdrs/dst
+sudo xcodebuild installhdrs -project libsyscall/Libsyscall.xcodeproj -sdk macosx ARCHS='x86_64 i386' SRCROOT=$PWD/libsyscall OBJROOT=$PWD/BUILD.hdrs/obj SYMROOT=$PWD/BUILD.hdrs/sym DSTROOT=$PWD/BUILD.hdrs/dst
+sudo ditto BUILD.hdrs/dst `xcrun -sdk macosx -show-sdk-path`
+
+# Libplatform
+cd ../libplatform-*
+sudo ditto $PWD/include `xcrun -sdk macosx -show-sdk-path`/usr/local/include
+
+# Libdispatch
+At last you can build libfirehose_kernel.a from the libdispatch library. You won't build the whole library since you're only out after libfirehose_kernel.a and headers.
+
+cd ../libdispatch-*
+mkdir -p BUILD.hdrs/obj BUILD.hdrs/sym BUILD.hdrs/dst
+sudo xcodebuild install -project libdispatch.xcodeproj -target libfirehose_kernel -sdk macosx ARCHS='x86_64 i386' SRCROOT=$PWD OBJROOT=$PWD/obj SYMROOT=$PWD/sym DSTROOT=$PWD/dst
+sudo ditto $PWD/dst/usr/local `xcrun -sdk macosx -show-sdk-path`/usr/local
+
+# XNU
+cd $XNUPATH
+# You can choose between RELEASE, DEVELOPMENT or DEBUG, or all.
+make SDKROOT=macosx ARCH_CONFIGS=X86_64 KERNEL_CONFIGS="RELEASE DEVELOPMENT DEBUG"
+
+Depending on which kernel config you choose, your kernel should be found at either locations.
+
+# If you built DEBUG
+file BUILD/obj/DEBUG_X86_64/kernel.debug
+BUILD/obj/DEBUG_X86_64/kernel.debug: Mach-O 64-bit executable x86_64
+
+# If you built DEVELOPMENT
+file BUILD/obj/DEVELOPMENT_X86_64/kernel.development
+BUILD/obj/DEVELOPMENT_X86_64/kernel.development: Mach-O 64-bit executable x86_64
+
+# If you built RELEASE
+file BUILD/obj/RELEASE_X86_64/kernel
+BUILD/obj/RELEASE_X86_64/kernel: Mach-O 64-bit executable x86_64
+
+
+sudo cp BUILD/obj/RELEASE_X86_64/kernel /System/Library/Kernels/
+sudo kextcache -invalidate /
