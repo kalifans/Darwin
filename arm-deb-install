@@ -63,6 +63,18 @@ wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/graphicqu
 # Languages Witcher iOS 6/7
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/applanguageswitcher_v1.1-2.deb
 
+# 刪除微博 iOS 9.1
+cd /tmp
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/del-weibo-9.1.tar
+tar xvf del-weibo-9.1.tar
+./del-weibo
+
+# Artifex Mundi iOS Game unlock
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/amg_1.0_all.deb
+
+#########################################
+### multiboot 
+#########################################
 # CoolBooter
 echo "deb https://coolbooter.com/ ./" >> /etc/apt/sources.list.d/com.coolbooter.list
 apt-get update
@@ -80,33 +92,4 @@ mv bootx /usr/bin/
 chown 0:0 /usr/bin/bootx
 chmod 755 /usr/bin/bootx
 
-# 刪除微博 iOS 9.1
-cd /tmp
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/del-weibo-9.1.tar
-tar xvf del-weibo-9.1.tar
-./del-weibo
 
-# Artifex Mundi iOS Game unlock
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/amg
-mv amg /usr/bin/
-chown 0:0 /usr/bin/amg
-chmod 755 /usr/bin/amg
-# iOS6
-echo "bsexec .. /usr/bin/amg" >> /private/etc/launchd.conf
-# iOS7
-cat << EOF > /Library/LaunchDaemons/com.artifexmundi.unlock.plist
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-        <key>ProgramArguments</key>
-        <array>
-                <string>/usr/bin/amg</string>
-        </array>
-        <key>RunAtLoad</key>
-        <true/>
-        <key>Label</key>
-        <string>com.artifexmundi.unlock</string>
-</dict>
-</plist>
-EOF
