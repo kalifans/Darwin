@@ -26,8 +26,7 @@ apt-get install adv-cmds gdb
 # Terminal
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/iosterminal_1.0.2-3_ios6.deb
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/iosterminal_1.0.2-3_ios7.deb
-# iOS 9
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/iosterminal_1.0.2-4_ios8%2B.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/iosterminal_1.0.2-4_ios9.deb
 
 # iFile iOS 6
 wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/eu.heinelt.ifile_2.2.0-1_iphoneos-arm_ios6.deb
