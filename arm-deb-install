@@ -12,6 +12,11 @@ apt-get autoremove
 apt-get autoclean
 apt-get clean all
 
+# Base
+apt-get install coreutils
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/shell-utils_1.0_se.deb
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/openssl-1.0_1.0.2l_iphoneos-arm.deb
+
 # Appsync Unified iOS 8.4.1
 apt-get install net.angelxwind.appsyncunified
 
@@ -32,11 +37,6 @@ wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/iostermin
 wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/eu.heinelt.ifile_2.2.0-1_iphoneos-arm_ios6.deb
 # iFile iOS 7+
 wget --no-check-certificate https://raw.githubusercontent.com/kalifans/Darwin/IOS/eu.heinelt.ifile_2.2.0-1_iphoneos-arm_julioverne.deb
-
-# Base
-apt-get install coreutils
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/shell-utils_1.0_se.deb
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/openssl-1.0_1.0.2l_iphoneos-arm.deb
 
 # System & Network Utils
 apt-get install bind stunnel inetutils gawk adv-cmds diskdev-cmds dns2tcp file file-cmds findutils ngrep rpl rlwrap rsync sgrep tcpdump top whois
