@@ -56,11 +56,14 @@ wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/ruby_2.4.
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/libnet_1.1.6_iphoneos-arm.deb
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/ettercap_0.8.2_iphoneos-arm.deb
 
-# 關閉霧面特效
-wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/graphicquality_1.0_iphoneos-arm.deb
-
 # Languages Witcher iOS 6/7
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/IOS/applanguageswitcher_v1.1-2.deb
+
+# ipainstaller
+apt-get install com.autopear.installipa com.slugrail.ipainstaller
+
+# 關閉霧面特效
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/graphicquality_1.0_iphoneos-arm.deb
 
 # 刪除微博 iOS 9.1
 cd /tmp
