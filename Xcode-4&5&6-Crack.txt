@@ -99,3 +99,14 @@ Windows -> Organizer
 視窗右邊點 Use for Development 即可。
 這時候，設備旁邊應該是亮黃燈，重新接傳輸線 Organizer 中會出現進度條，跑完變綠色後表示開發模式已經啟用。
 然後回到專案中，選擇你的設備「Run」即可。
+
+==================================================
+問題排除
+==================================================
+xcode6 啟動失敗處理
+Simulator verification failed.
+Ensure that Xcode.app is installed on a volume with ownership enabled.
+
+sudo chown 0:0 Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/lib/dyld_sim
+
+
