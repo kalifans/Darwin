@@ -75,6 +75,9 @@ tar xvf del-weibo-9.1.tar
 # Artifex Mundi iOS Game unlock
 wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/amg_1.0_all.deb
 
+# Big Fish iOS Game unlock
+wget --no-check-certificate https://github.com/kalifans/Darwin/raw/deb/bfg_1.0_all.deb
+
 #########################################
 ### multiboot 
 #########################################
