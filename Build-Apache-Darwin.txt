@@ -1,0 +1,85 @@
+####################################################
+### Build Apache2 2.2 on macOS 2018
+####################################################
+# Build Depends:
+# Install Command Line Tools or Xcode
+
+curl -o httpd-2.2.34.tar.gz http://archive.apache.org/dist/httpd/httpd-2.2.34.tar.gz
+tar zxvf httpd-2.2.34.tar.gz
+
+# Patch
+sed -i "" '/mpm_netware_module/i \
+Include conf/mods-enabled/*.conf\
+Include conf/mods-enabled/*.load\
+' httpd-2.2.34/docs/conf/httpd.conf.in
+
+# settings htmldocdir /var/www/html
+sed -i "" 's/^exp_htdocsdir=.*/exp_htdocsdir=\/var\/www\/html/g' httpd-2.2.34/configure
+# Allow .htaccess Override
+sed -i "" 's/AllowOverride None/AllowOverride All/g' httpd-2.2.34/docs/conf/httpd.conf.in
+# settings ServerName
+sed -i "" 's/^#ServerName .*/ServerName localhost:80/g' httpd-2.2.34/docs/conf/httpd.conf.in
+
+
+# apachectl patch
+sed -i "" 's/STATUSURL=.*/APACHE_STATUS=$(ps -ef | grep apache | grep start | awk '"'{print \$10}'"' | uniq)/g' httpd-2.2.34/support/apachectl.in
+
+sed -i "" '/APACHE_STATUS/a \
+if test "$APACHE_STATUS" == "start"; then STATUS_MSG="apache2 already running"; else STATUS_MSG="apache2 not running"; fi\
+' httpd-2.2.34/support/apachectl.in
+
+sed -i "" 's/bin\/sh/bin\/bash/g' httpd-2.2.34/support/apachectl.in
+sed -i "" 's/$LYNX $STATUSURL.*/echo $STATUS_MSG/g' httpd-2.2.34/support/apachectl.in
+sed -i "" '/^LYNX=/d' httpd-2.2.34/support/apachectl.in
+
+APACHE_DIR=/usr/local/apache2/2.2
+
+cd httpd-2.2.34
+./configure \
+--prefix=$APACHE_DIR \
+--with-z=/usr \
+--with-included-apr \
+--with-pcre=yes \
+--with-program-name=apache2 \
+--with-suexec-bin=$APACHE_DIR/lib/apache2/suexec \
+--with-suexec-logfile=/var/log/apache2/suexec.log \
+--with-suexec-docroot=/var/www \
+--with-suexec-caller=www-data \
+--with-suexec-userdir=public_html \
+--with-suexec-uidmin=100 \
+--enable-suexec=shared \
+--enable-log-config=static \
+--enable-so \
+--enable-suexec \
+--enable-pie \
+--enable-mpms-shared=all \
+--enable-mods-shared="all cgi ident authnz_fcgi imagemap cern_meta proxy_fdpass proxy_http2 bucketeer case_filter case_filter_in" \
+--enable-mods-static="unixd logio watchdog version"
+
+make -j$(nproc)
+sudo make install
+
+sudo ln -sf apxs $APACHE_DIR/bin/apxs2
+sudo cp $APACHE_DIR/bin/apachectl /usr/sbin/apache22
+sudo mkdir -p /var/www/html
+sudo cp $APACHE_DIR/htdocs/index.html /var/www/html/
+sudo mkdir -p $APACHE_DIR/conf/mods-enabled
+
+sudo scutil --set HostName localhost
+
+#####################################
+### Apache Usage
+#####################################
+# start apache 2.2
+sudo apache22 start
+# stop apache 2.2
+sudo apache22 stop
+# restart apache 2.2
+sudo apache22 restart
+# apache service status
+sudo apache22 status
+
+# Test
+open http://localhost
+or
+open http://127.0.0.1

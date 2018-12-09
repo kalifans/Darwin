@@ -1,0 +1,81 @@
+####################################################
+### Build PHP 5.2 on macOS 2018
+####################################################
+# Build
+curl -o php-5.2.17.tar.gz https://museum.php.net/php5/php-5.2.17.tar.gz
+tar zxvf php-5.2.17.tar.gz
+
+SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
+export CFLAGS=" -I$SDKROOT/usr/include"
+export LDFLAGS=" -L$SDKROOT/usr/lib"
+
+cd php-5.2.17
+
+curl -o php-5.x.x.patch https://mail.gnome.org/archives/xml/2012-August/txtbgxGXAvz4N.txt
+patch -p0 -i php-5.x.x.patch
+
+MYSQL_DIR=/usr/local/mysql/5.0
+APACHE_DIR=/usr/local/apache2/2.2
+PHP_DIR=/usr/local/php/5.2
+
+./configure --prefix=$PHP_DIR \
+--sysconfdir=$PHP_DIR/conf \
+--with-pear=$PHP_DIR/share/php \
+--with-exec-dir=$PHP_DIR/lib/libexec \
+--with-config-file-scan-dir=$PHP_DIR/conf/apache2/conf.d \
+--with-config-file-path=$PHP_DIR/conf/apache2 \
+--with-apxs2=$APACHE_DIR/bin/apxs2 \
+--with-mysql=$MYSQL_DIR \
+--with-mysqli=$MYSQL_DIR/bin/mysql_config \
+--with-libxml-dir=/usr \
+--with-jpeg-dir=/usr \
+--with-png-dir=/usr \
+--with-zlib-dir=$SDKROOT/usr \
+--without-iconv \
+--enable-dbase \
+--enable-mbstring \
+--disable-debug
+
+make -j$(nproc)
+sudo make install
+
+sudo install -c -m755 libs/libphp5.so $PHP_DIR/lib/libphp5.so
+sudo install -c -m755 $PHP_DIR/lib/libphp5.so $APACHE_DIR/modules/libphp5.so
+
+sudo mkdir -p $PHP_DIR/conf/apache2/conf.d
+cat php.ini-dist | tr "\t" " " | sed -e'/memory_limit =/ s/\b128M/16M/g' > php.ini-cgi
+sudo install -c -m644 php.ini-cgi $PHP_DIR/conf/apache2/php.ini
+
+#####################################
+### PHP 5 Settings
+#####################################
+sudo sed -i "" 's/ index.php//g' $APACHE_DIR/conf/apache2.conf
+sudo sed -i "" 's/DirectoryIndex /DirectoryIndex index.php /g' $APACHE_DIR/conf/apache2.conf
+
+sudo sed -i "" '/php5_module/d' $APACHE_DIR/conf/apache2.conf
+sudo sed -i "" '/rewrite_module/a \
+LoadModule php5_module modules/libphp5.so\
+' $APACHE_DIR/conf/apache2.conf
+
+sudo sed -i "" '/x-httpd-php/d' $APACHE_DIR/conf/apache2.conf
+sudo sed -i "" '/AddOutputFilter/a \
+#    AddType application/x-httpd-php .php\
+' $APACHE_DIR/conf/apache2.conf
+sudo sed -i "" 's/#    AddType/    AddType/g' $APACHE_DIR/conf/apache2.conf
+
+# restart apache2
+sudo apache22 stop
+sudo apache22 start
+
+# test php
+sudo sh -c "cat > /private/var/www/html/info.php << EOF
+<?php
+phpinfo();
+?>
+EOF"
+
+sudo chown -R $USER:staff /private/var/www/html
+
+ln -s /private/var/www/html $HOME/www
+
+open http://localhost/info.php

@@ -1,0 +1,100 @@
+####################################################
+### Build MySql 5.0 on macOS 2018
+####################################################
+# Disable System Integrity Protection (SIP)
+Reboot into Recovery Mode, open the terminal，Enter following command:
+csrutil disable
+
+Reboot
+
+# Build gnu sed
+curl -o sed-4.4.tar.xz http://ftp.gnu.org/gnu/sed/sed-4.4.tar.xz
+tar Jxvf sed-4.4.tar.xz
+cd sed-4.4
+./configure --prefix=/usr --program-prefix=g
+make -j$(sysctl -n hw.ncpu)
+make install DESTDIR=$HOME/Build/$(basename $(pwd))
+sudo make install
+
+# replace gnu sed
+sudo mv /usr/bin/sed /usr/bin/bsd-sed
+sudo ln -s /usr/bin/gsed /usr/bin/sed
+
+cd ..
+
+####################################################
+### Build MySql 5.0
+####################################################
+curl -o mysql-5.0.86.tar.gz https://cdn.mysql.com/archives/mysql-5.0/mysql-5.0.86.tar.gz
+tar zxvf mysql-5.0.86.tar.gz
+cd mysql-5.0.86
+
+./configure \
+--prefix=/usr/local/mysql/5.0 \
+--sysconfdir=/etc/mysql \
+--localstatedir=/var/mysql/data \
+--with-unix-socket-path=/var/run/mysqld/mysqld.sock \
+--with-charset=utf8 \
+--with-collation=utf8_general_ci \
+--with-extra-charsets=all \
+--enable-shared \
+--enable-static \
+--enable-thread-safe-client \
+--enable-local-infile \
+--with-fast-mutexes \
+--with-big-tables \
+--with-mysqld-user=_mysql \
+--with-libwrap \
+--with-readline \
+--with-ssl \
+--without-docs \
+--with-plugins=max \
+--with-embedded-server \
+--with-embedded-privilege-control \
+--without-debug
+
+make -j$(sysctl -n hw.ncpu)
+sudo make install
+
+# replace original sed
+sudo rm /usr/bin/sed
+sudo ln -s /usr/bin/bsd-sed /usr/bin/sed
+
+#####################################
+### MySQL Settings
+#####################################
+# create sysconf dir
+sudo mkdir -p /etc/mysql
+sudo cp /usr/local/mysql/5.0/share/mysql/my-medium.cnf /etc/mysql/my.cnf
+
+sudo cp /usr/local/mysql/5.0/share/mysql/mysql.server /usr/sbin/mysql
+
+# setting permissions
+sudo mkdir -p /var/mysql/data
+sudo chown -R _mysql:wheel /var/mysql/data
+
+# initialization database
+sudo /usr/local/mysql/5.0/bin/mysql_install_db --user=_mysql
+
+# start mysql
+sudo mysql start
+
+# settings the mysql password
+PASSWD='your password'
+sudo /usr/local/mysql/5.0/bin/mysqladmin -u root password $PASSWD
+
+# tset mysql server
+sudo /usr/local/mysql/5.0/bin/mysqlshow -p
+
+# connection MySQL
+sudo /usr/local/mysql/5.0/bin/mysql -u root -p
+
+# view encoding
+show variables like 'character%'; 
+
+# show databases
+show databases;
+
+# exit
+quit;
+
