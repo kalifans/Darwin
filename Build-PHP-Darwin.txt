@@ -36,7 +36,7 @@ PHP_DIR=/usr/local/php/5.2
 --enable-mbstring \
 --disable-debug
 
-make -j$(nproc)
+make -j$(sysctl -n hw.ncpu)
 sudo make install
 
 sudo install -c -m755 libs/libphp5.so $PHP_DIR/lib/libphp5.so
