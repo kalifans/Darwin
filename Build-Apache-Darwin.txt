@@ -56,7 +56,7 @@ cd httpd-2.2.34
 --enable-mods-shared="all cgi ident authnz_fcgi imagemap cern_meta proxy_fdpass proxy_http2 bucketeer case_filter case_filter_in" \
 --enable-mods-static="unixd logio watchdog version"
 
-make -j$(nproc)
+make -j$(sysctl -n hw.ncpu)
 sudo make install
 
 sudo ln -sf apxs $APACHE_DIR/bin/apxs2
