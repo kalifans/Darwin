@@ -5,7 +5,7 @@
 curl -O http://nah6.com/~itsme/cvs-xdadevtools/iphone/tools/lzssdec.cpp
 g++ lzssdec.cpp -o lzssdec
 
-# Get Offset
+# Find Offset
 Find HEX: ff cf fa ed fe
 
 xxd -s 0x1b0 -l 0x20 kernelcache.release.iphone8b
