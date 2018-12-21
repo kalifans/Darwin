@@ -1,0 +1,69 @@
+xcode 連結按鈕
+
+點選右上角 兩個圈圈圖示(Assistant Editors on Right)
+將左邊View按鈕圖示按住 Ctrl 拖拉到右邊 ViewController.m 內
+
+@interface ViewController ()
+按鈕拖放到這裡
+@end
+
+Name 填入 button
+
+範例:
+@interface ViewController ()
+@property (weak, nonatomic) IBOutlet UIButton *button;
+@property (weak, nonatomic) IBOutlet UILabel *environmentLabel;
+@end
+
+然後再一次拖拉View按鈕圖示按住 Ctrl 拖拉到右邊 ViewController.m 內的代碼最下面 (@end 之前)
+
+Name 填入 start
+Type 填入 id
+
+範例:
+- (IBAction)start:(id)sender {
+}
+
+@end
+
+
+代碼參考:
+//禁用按鈕
+self.button.enabled = NO;
+
+//啟用按鈕
+self.button.enabled = NO;
+
+//設置按鈕顯示文字
+[self.button setTitle:@"Run Exploit" forState:UIControlStateNormal];
+
+// 執行 shell 指令
+dsystem("/sbin/reboot");
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
+
+- (IBAction)start:(id)sender {
+    initialize();
+    uint32_t kernel_base = leak_kernel_base();
+    printf("kernel base: %p\n", (void *)kernel_base);
+    
+    bool pre91 = strncmp([[[UIDevice currentDevice] systemVersion] cStringUsingEncoding:NSUTF8StringEncoding], "9.0", 3) == 0;
+
+    self.button.enabled = NO;
+    [self.button setTitle:@"Run Exploit" forState:UIControlStateNormal];
+    exploit(kernel_base, pre91);
+    
+    self.button.enabled = NO;
+    [self.button setTitle:@"Install Cydia" forState:UIControlStateNormal];
+    cydia_inst();
+
+    // Update button.
+    self.button.enabled = NO;
+    [self.button setTitle:@"Done" forState:UIControlStateNormal];
+
+    dsystem("/sbin/reboot");
+}
+
+
