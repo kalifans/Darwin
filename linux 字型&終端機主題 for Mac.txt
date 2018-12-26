@@ -1,0 +1,19 @@
+linux Mint 字型&終端機主題 for Mac
+
+添加字型
+curl -O https://raw.githubusercontent.com/kalifans/Darwin/OSX/linux-font.tar.gz
+sudo tar zxvf linux-font.tar.gz -C /Library/Fonts/
+
+修改終端機命令提示符號色彩
+sudo -s
+sed -i "" 's/^PS1=/#PS1=/g' /private/etc/bashrc
+echo "PS1='\[\033[1;34m\]\u\[\033[1;32m\]@\[\033[1;32m\]\h\[\033[1;32m\]: \[\033[1;36m\]\w \[\033[1;33m\]\\$ \[\033[0m\]'" >> /private/etc/bashrc
+echo "PS1='\[\033[1;31m\]\u\[\033[1;32m\]@\[\033[1;32m\]\h\[\033[1;32m\]: \[\033[1;36m\]\w \[\033[1;33m\]\\$ \[\033[0m\]'" > .bashrc
+
+命令提示符號主題
+curl -O https://raw.githubusercontent.com/kalifans/Darwin/OSX/Tango.terminal
+
+打開終端機偏好設置 輸入 Tango.terminal
+最好能刪除其他色彩主題 那另開終端機主題就會自動使用 Tango 主題
+
+終端機字型大小: DejaVu sans Mono Book 12
