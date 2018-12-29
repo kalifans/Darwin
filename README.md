@@ -1,1 +1,1 @@
-# Darwin
+# macOS kext
