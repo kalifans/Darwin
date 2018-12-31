@@ -1,0 +1,11 @@
+##########################################
+### Build Lilu on macOS 2018
+##########################################
+# download source
+git clone https://github.com/acidanthera/Lilu.git
+
+Build with xcode
+
+mv $HOME/Lilu/Build/Lilu/Build/Products/Release/Lilu.kext .
+mkdir -p Lilu.kext/Contents/Resources
+cp -r $HOME/Lilu/Lilu/Library Lilu.kext/Contents/Resources/
