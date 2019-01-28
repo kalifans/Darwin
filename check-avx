@@ -1,0 +1,117 @@
+#!/bin/bash
+
+#######################################################
+# Dump Binary to asm file
+# Linux:
+# $ objdump -d binary_file > binary.asm
+#
+# MacOS:
+# $ otool -tv binary_file > binary.asm
+# 
+#######################################################
+check_fun(){
+FILE_NAME=$(/usr/bin/basename $FILE)
+mkdir -p $HOME/opcode_check/$FILE_NAME
+
+# check VSSE
+VSSE=$(awk '/[ \t](vaddss|vandnps|vandps|vcmpps|vcmpss|vcomiss|vcvtsi2ss|vcvtss2si|vcvttss2si|vdivps|vdivss|vldmxcsr|vmaxps|vmaxss|vminps|vminss|vmovaps|vmovhlps|vmovhps|vmovlhps|vmovlps|vmovmskps|vmovntps|vmovss|vmovups|vmulps|vmulss|vorps|vrcpps|vrcpss|vrsqrtps|vrsqrtss|vshufps|vsqrtps|vsqrtss|vstmxcsr|vsubps|vsubss|vucomiss|vunpckhps|vunpcklps|vxorps)[ \t]/' $FILE)
+if [ ! "$VSSE" == "" ]; then
+    echo $VSSE > $HOME/opcode_check/$FILE_NAME/VSSE.txt
+fi
+
+# check VSSE2
+VSSE2=$(awk '/[ \t](vandnpd|vandpd|vcmppd|vcmpsd|vcomisd|vcvtdq2pd|vcvtdq2ps|vcvtpd2dq|vcvtpd2ps|vcvtps2dq|vcvtps2pd|vcvtsd2si|vcvtsd2ss|vcvtsi2sd|vcvtss2sd|vcvttpd2dq|vcvttps2dq|vcvttsd2si|vdivpd|vdivsd|vmaskmovdqu|vmaxpdvpsllq|vmaxsd|vminpd|vminsd|vmovapd|vmovd|vmovq|vmovdqa|vmovdqu|vmovhpd|vmovlpd|vmovmskpd|vmovntdq|vmovntpd|vmovsd|vmovupd|vmulpd|vmulsd|vorpd|vpacksswb|vpackssdw|vpackuswb|vpaddb|vpsadbw|vpaddw|vpaddd|vpaddq|vpaddb|vpaddsb|vpaddsw|vpaddusb|vpaddusw|vpand|vpandn|vpavgb|vpavgw|vpcmpeqb|vpcmpeqw|vpcmpeqd|vpcmpgtb|vpcmpgtw|vpcmpgtd|vpinsrw|vpmaddwd|vpmovmskb|vpmulhuw|vpmulhw|vpmullw|vpmuludq|vpor|vpshufd|vpshufhw|vpshuflw|vpsllw|vpslld|vpsllq|vpslldq|vpsraw|vpsrad|vpsrlw|vpsrld|vpsrlq|vpsrldq|vpsubb|vpsubw|vpsubd|vpsubq|vpsubsb|vpsubsw|vpsubusb|vpsubusw|vpunpckhbw|vpunpckhwd|vpunpckhdq|vpunpckhqdq|vpunpcklbw|vpunpcklwd|vpunpckldq|vpunpcklqdq|vpxor|vshufpd|vsqrtpd|vsqrtsd|vsubpd|vsubsd|vucomisd|vunpckhpd|vunpcklpd|vxorpd)[ \t]/' $FILE)
+if [ ! "$VSSE2" == "" ]; then
+    echo $VSSE2 > $HOME/opcode_check/$FILE_NAME/VSSE2.txt
+fi
+
+# check VSSE3
+VSSE3=$(awk '/[ \t](vaddsubpd|vaddsubps|vhaddpd|vhaddps|vhsubpd|vhsubps|vlddqu|vmovddup|vmovshdup|vmovsldup)[ \t]/' $FILE)
+if [ ! "$VSSE3" == "" ]; then
+    echo $VSSE3 > $HOME/opcode_check/$FILE_NAME/VSSE3.txt
+fi
+
+# check VSSSE3
+VSSSE3=$(awk '/[ \t](vpabsb|vpabsw|vpabsb|vpalignr|vphaddw|vphaddd|vphaddsw|vphsubw|vphsubd|vphsubsw|vpmaddubsw|vpmulhrsw|vpshufb|vpsignb|vpsignw|vpsignd)[ \t]/' $FILE)
+if [ ! "$VSSSE3" == "" ]; then
+    echo $VSSSE3 > $HOME/opcode_check/$FILE_NAME/VSSSE3.txt
+fi
+
+# check VSSE4.1
+VSSE41=$(awk '/[ \t](vblendpd|vblendps|vblendvpd|vblendvps|vdppd|vdpps|vextractps|vinsertps|vmovntdqa|vmpsadbw|vpackusdw|vpblendvb|vpblendw|vpcmpeqq|vpextrb|vpextrd|vpextrq|vpextrw|vphminposuw|vpinsrb|vpinsrd|vpinsrq|vpmaxsb|vpmaxsw|vpmaxsd|vpmaxub|vpmaxuw|vpmaxud|vpminsb|vpminsw|vpminsd|vpminub|vpminuw|vpminud|vpmovsxbw|vpmovsxbd|vpmovsxbq|vpmovsxwd|vpmovsxwq|vpmovsxdq|vpmovzxbw|vpmovzxbd|vpmovzxbq|vpmovzxwd|vpmovzxwq|vpmovzxdq|vpmuldq|vpmulld|vptest|vroundpd|vroundps|vroundsd|vroundss)[ \t]/' $FILE)
+if [ ! "$VSSE41" == "" ]; then
+    echo $VSSE41 > $HOME/opcode_check/$FILE_NAME/VSSE41.txt
+fi
+# check VSSE4.2
+VSSE42=$(awk '/[ \t](vpcmpestri|vpcmpestrm|vpcmpgtq|vpcmpistri|vpcmpistrm)[ \t]/' $FILE)
+if [ ! "$VSSE42" == "" ]; then
+    echo $VSSE42 > $HOME/opcode_check/$FILE_NAME/VSSE42.txt
+fi
+
+# check BMI
+BMI=$(awk '/[ \t](andn|bextr|blsi|blsmsk|blsr|tzcnt|bzhi|mulx|pdep|pext|rorx|sarx|shrx|shlx)[ \t]/' $FILE)
+if [ ! "$BMI" == "" ]; then
+    echo $BMI > $HOME/opcode_check/$FILE_NAME/BMI.txt
+fi
+
+# check AVX
+AVX=$(awk '/[ \t](vbroadcastss|vbroadcastsd|vbroadcastf128|vextractf128|vextracti128|vgatherdpd|vgatherdps|vinsertf128|vinserti128|vmaskmovps|vmaskmovpd|vpblendd|vpbroadcastb|vpbroadcastw|vpbroadcastd|vpbroadcastq|vbroadcasti128|vperm2f128|vperm2i128|vpermd|vpermilpd|vpermilps|vpermpd|vpermps|vpermq|vpgatherdd|vpgatherqd|vpgatherdq|vpgatherqq|vpmaskmovd|vpmaskmovq|vpsllvd|vpsllvq|vpsravd|vpsrlvd|vpsrlvq|vtestps|vtestpd|vzeroall|vzeroupper)[ \t]/' $FILE)
+if [ ! "$AVX" == "" ]; then
+    echo $AVX > $HOME/opcode_check/$FILE_NAME/AVX.txt
+fi
+
+# check AES
+AES=$(awk '/[ \t](aesenc|vaesenc|aesenclast|vaesenclast|aesdec|vaesdec|aesdeclast|vaesdeclast|aeskeygenassist|vaeskeygenassist|aesimc|vaesimc|pclmulqdq|vpclmulqdq)[ \t]/' $FILE)
+if [ ! "$AES" == "" ]; then
+    echo $AES > $HOME/opcode_check/$FILE_NAME/AES.txt
+fi
+
+# check F16C
+F16C=$(awk '/[ \t](vcvtph2ps|vcvtps2ph)[ \t]/' $FILE)
+if [ ! "$F16C" == "" ]; then
+    echo $F16C > $HOME/opcode_check/$FILE_NAME/F16C.txt
+fi
+# check FMA
+FMA=$(awk '/[ \t](vfmadd132pd|vfmadd213pd|vfmadd231pd|vfmadd132ps|vfmadd213ps|vfmadd231ps|vfmadd132sd|vfmadd213sd|vfmadd231sd|vfmadd132ss|vfmadd213ss|vfmadd231ss|vfmaddsub132pd|vfmaddsub213pd|vfmaddsub231pd|vfmaddsub132ps|vfmaddsub213ps|vfmaddsub231ps|vfmsub132pd|vfmsub213pd|vfmsub231pd|vfmsub132ps|vfmsub213ps|vfmsub231psvfnmsub231sd|vfmsub132sd|vfmsub213sd|vfmsub231sd|vfmsub132ss|vfmsub213ss|vfmsub231ss|vfmsubadd132pd|vfmsubadd213pd|vfmsubadd231pd|vfmsubadd132ps|vfmsubadd213ps|vfmsubadd231ps|vfnmadd132pd|vfnmadd213pd|vfnmadd231pd|vfnmadd132ps|vfnmadd213ps|vfnmadd231ps|vfnmadd132sd|vfnmadd213sd|vfnmadd231sd|vfnmadd132ss|vfnmadd213ss|vfnmadd231ss|vfnmsub132pd|vfnmsub213pd|vfnmsub231pd|vfnmsub132ps|vfnmsub213ps|vfnmsub231ps|vfnmsub132sd|vfnmsub213sd|vfnmsub231sd)[ \t]/' $FILE)
+if [ ! "$FMA" == "" ]; then
+    echo $FMA > $HOME/opcode_check/$FILE_NAME/FMA.txt
+fi
+
+if [ -f "/usr/bin/xdg-open" ]; then
+    xdg-open $HOME/opcode_check/$FILE_NAME
+else
+    open $HOME/opcode_check/$FILE_NAME
+fi
+
+}
+
+#######################################################
+menu_fun(){
+clear
+echo -e "    ************************************"
+echo -e "    Check ASM AVX OPCode"
+echo -e "    ************************************"
+echo -e ""
+echo -e "    Check VEX Prefix 128-bit & 256-bit"
+echo -e "    & BMI1/2 & AES ..."
+echo -e ""
+echo -e "    Drag and drop .asm files here"
+echo -e ""
+echo -e ""
+read FILE
+[[ "$FILE" ]]
+
+FILE=$(echo $FILE | sed s/"'"//g)
+
+if [ "$FILE" == "" ]; then
+    exit
+else
+    check_fun
+fi
+
+menu_fun
+
+}
+
+menu_fun
+
