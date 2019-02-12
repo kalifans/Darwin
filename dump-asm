@@ -1,0 +1,44 @@
+#!/bin/bash
+
+OSVER=$(uname -s)
+
+#######################################################
+dump_fun(){
+if [ "$OSVER" == "Darwin" ]; then
+    mkdir -p $HOME/objdump
+    otool -tv $FILE > $HOME/objdump/$FILE_NAME".asm"
+else
+    mkdir -p $HOME/objdump
+    objdump -d $FILE > $HOME/objdump/$FILE_NAME".asm"
+fi
+
+}
+
+#######################################################
+menu_fun(){
+clear
+echo -e "    ************************************"
+echo -e "    Dump Binrary to ASM File"
+echo -e "    ************************************"
+echo -e ""
+echo -e "    Drag and drop binrary files here"
+echo -e ""
+echo -e ""
+read FILE
+[[ "$FILE" ]]
+
+FILE=$(echo $FILE | sed s/"'"//g)
+
+if [ "$FILE" == "" ]; then
+    exit
+else
+    FILE_NAME=$(/usr/bin/basename $FILE)
+    dump_fun
+fi
+
+menu_fun
+
+}
+
+menu_fun
+
